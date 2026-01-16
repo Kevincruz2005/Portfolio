@@ -9,7 +9,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Kevin Cruz | Backend Engineer",
-  description: "Terminal-styled portfolio of Kevin Cruz, a Backend Focused Full Stack Developer.",
+  description: "Kevin Cruz, a Backend Focused Full Stack Developer.",
 };
 
 export default function RootLayout({

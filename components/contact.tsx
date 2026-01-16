@@ -16,6 +16,7 @@ export function Contact() {
     });
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [verificationStatus, setVerificationStatus] = useState<"idle" | "verifying" | "verified">("idle");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -66,17 +67,26 @@ export function Contact() {
                 setStatus("success");
                 setFormData({ name: "", email: "", message: "", _gotcha: "" });
                 setVerificationStatus("idle");
+                setErrorMessage("");
                 setTimeout(() => setStatus("idle"), 3000);
             } else {
                 const data = await response.json();
                 console.error("Server error:", data.error);
                 setStatus("error");
-                setTimeout(() => setStatus("idle"), 3000);
+                setErrorMessage(data.error || "Unknown error occurred");
+                setTimeout(() => {
+                    setStatus("idle");
+                    setErrorMessage("");
+                }, 5000);
             }
         } catch (error) {
             console.error("Submission error:", error);
             setStatus("error");
-            setTimeout(() => setStatus("idle"), 3000);
+            setErrorMessage("Network connection failed");
+            setTimeout(() => {
+                setStatus("idle");
+                setErrorMessage("");
+            }, 5000);
         }
     };
 
@@ -206,6 +216,16 @@ export function Contact() {
                                                 status === "error" ? "TRANSMISSION_FAILED" :
                                                     "INITIATE_SEND"}
                                     </Button>
+
+                                    {status === "error" && errorMessage && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            className="text-xs text-error font-mono text-center bg-error/10 p-2 rounded border border-error/20"
+                                        >
+                                            ERROR: {errorMessage}
+                                        </motion.div>
+                                    )}
                                 </form>
                             </div>
                         </div>

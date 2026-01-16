@@ -13,10 +13,28 @@ export async function POST(req: Request) {
         }
 
 
+
+        // Safe Environment Check
+        const envCheck = {
+            host: !!process.env.SMTP_HOST,
+            port: !!process.env.SMTP_PORT,
+            user: !!process.env.SMTP_USER,
+            pass: !!process.env.SMTP_PASS,
+            to: !!process.env.CONTACT_EMAIL
+        };
+
+        if (Object.values(envCheck).some(v => !v)) {
+            console.error("Missing Environment Variables:", envCheck);
+            return NextResponse.json(
+                { error: "Server misconfiguration: Missing Email Credentials" },
+                { status: 500 }
+            );
+        }
+
         const transporter = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
             port: Number(process.env.SMTP_PORT),
-            secure: true, // true for 465, false for other ports
+            secure: Number(process.env.SMTP_PORT) === 465, // True for 465, false for other ports
             auth: {
                 user: process.env.SMTP_USER,
                 pass: process.env.SMTP_PASS,

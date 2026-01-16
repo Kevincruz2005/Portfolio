@@ -9,7 +9,7 @@ export const projects = [
         title: "Movie Rental System",
         description: "Built a rental management system with relational database schema, CRUD operations, and transaction handling.",
         tags: "Java,JDBC,PostgreSQL,NeonDB",
-        link: "https://github.com/Kevincruz2005",
+        link: "http://github.com/Kevincruz2005/Movie-Rental-System",
     },
     {
         title: "Secure RESTful Backend",
@@ -27,25 +27,25 @@ export const projects = [
         title: "Electronics Rental System",
         description: "Developed a rental platform with authentication, database integration, and REST-style data management.",
         tags: "React,Next.js,Supabase",
-        link: "https://github.com/Kevincruz2005",
+        link: "https://github.com/Kevincruz2005/Hobbyist",
     },
     {
         title: "Simple Graphics Renderer",
         description: "A lightweight image viewer and graphics renderer built with C and SDL3, supporting multiple image formats.",
         tags: "C,SDL3,Graphics",
-        link: "https://github.com/Kevincruz2005",
+        link: "https://github.com/Kevincruz2005/Image_Rendering",
     },
     {
         title: "Fake News Detector",
         description: "Built a browser extension to detect fake news using content analysis and OCR-based text extraction.",
         tags: "JS,Gemini API,OCR,Browser Ext",
-        link: "https://github.com/Kevincruz2005",
+        link: "https://github.com/Kevincruz2005/AI_news-verify",
     },
     {
         title: "Typing Speed Test",
         description: "A Java desktop application to measure typing speed and accuracy with session tracking.",
         tags: "Java,Swing,Desktop",
-        link: "https://github.com/Kevincruz2005",
+        link: "https://github.com/Kevincruz2005/Typing_Speed_Tester",
     },
     /*{
         title: "32-bit Operating System",

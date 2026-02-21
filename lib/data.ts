@@ -1,5 +1,11 @@
 export const projects = [
     {
+        title: "NitroGate — The Netflix of Web3",
+        description: "Omnichain video streaming platform where viewers pay per second, not per month. Built on Yellow Network state channels for zero-gas micropayments (0.0001 USDC/sec), Circle CCTP for cross-chain USDC liquidity, and ENS for creator identity — with only 2 on-chain transactions per session.",
+        tags: "Next.js,TypeScript,Wagmi,Yellow Network,Circle CCTP,ENS,Web3",
+        link: "https://github.com/Kevincruz2005/ETHGlobal-HackMoney2026",
+    },
+    {
         title: "DBANK - Decentralized Bank (ICP)",
         description: "Built a decentralized banking application on the Internet Computer where users can deposit funds and earn compound interest using a Motoko backend and web frontend.",
         tags: "Motoko,ICP,DFX,JavaScript,Blockchain",

@@ -1,29 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Serif_Display, Inter, JetBrains_Mono } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import { MotionProvider } from "@/components/motion-provider";
 import { Navbar } from "@/components/navbar";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
-const display = DM_Serif_Display({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: "400",
-  display: "swap",
-});
-
-const body = Inter({
+const body = DM_Sans({
   subsets: ["latin"],
   variable: "--font-body",
   weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -53,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "profile",
     url: canonicalUrl,
-    title: "Kevin Cruz — Systems that hold up under pressure",
+    title: "Kevin Cruz — Thoughtful systems, reliable infrastructure",
     description:
       "Backend architecture, systems programming, automation and verifiable digital infrastructure.",
     siteName: "Kevin Cruz Portfolio",
@@ -62,14 +48,14 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Kevin Cruz, backend-focused software engineer — systems that hold up under pressure",
+        alt: "Kevin Cruz, backend-focused software engineer — thoughtful systems and reliable infrastructure",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Kevin Cruz — Backend-Focused Software Engineer",
-    description: "Systems that hold up under pressure.",
+    description: "Thoughtful systems that grow into reliable infrastructure.",
     images: ["/opengraph-image"],
   },
   icons: {
@@ -79,7 +65,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "dark",
-  themeColor: "#050505",
+  themeColor: "#075458",
   width: "device-width",
   initialScale: 1,
 };
@@ -106,7 +92,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html
       lang="en"
-      className={`${display.variable} ${body.variable} ${mono.variable}`}
+      className={body.variable}
       data-scroll-behavior="smooth"
     >
       <body>

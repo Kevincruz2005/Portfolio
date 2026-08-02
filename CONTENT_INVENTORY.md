@@ -1,6 +1,6 @@
 # Portfolio content inventory
 
-Audit date: 2026-08-01. Revised after local review to reflect Kevin's preference for a broad GitHub archive, restored email contact, and real multi-page routes.
+Audit date: 2026-08-02. Revised after local review to reflect Kevin's preference for a broad GitHub archive, restored email contact, real multi-page routes, and the calm environmental branch.
 
 | Existing content | Source | Decision | Verification / rewrite status |
 | --- | --- | --- | --- |
@@ -29,8 +29,9 @@ Audit date: 2026-08-01. Revised after local review to reflect Kevin's preference
 | GitHub login page | `/login`, `/api/auth` | Exclude | Unlinked from the public portfolio and irrelevant to recruiter goals |
 | Résumé file | `public/Kevin_Cruz_Resume.pdf` | Replace | Existing file is 101-byte plain-text placeholder, not a PDF; replace with a verified-content résumé and no invented email |
 | Email address | Environment-variable references only | Intentionally omit | No public value is present in repository, GitHub profile, or supplied brief |
-| Existing green/blue cyber terminal styling | `app/globals.css` and components | Replace | Use a seamless black/violet interactive homepage with a consistent dark editorial product system on supporting routes |
-| Supplied Spline robot scene | Owner-supplied implementation brief | Add to homepage | Live client-side WebGL scene with loading, responsive and reduced-motion states |
+| Existing green/blue cyber terminal and robot styling | Prior branches | Replace | Use a calm teal, cream, green, and coral environmental system across every route |
+| Supplied environmental landscape | Owner-supplied implementation brief and image URL | Add to homepage | Next Image plus original CSS hills, mist, birds, leaves, pointer depth, scroll movement, and reduced-motion states |
+| Supplied stacked editorial cards | Owner-supplied brief and HTML reference | Adapt for projects | Retain all 11 projects and GitHub-only actions inside a scroll-linked full-screen stack |
 | Site architecture | Original single page plus user review | Replace | Use `/projects`, `/about`, `/capabilities`, and `/contact` endpoints with a shared shell |
 | Existing metadata | `app/layout.tsx` | Replace and expand | Add route canonicals, Open Graph, Twitter, Person JSON-LD, robots, multi-route sitemap and icon |
 

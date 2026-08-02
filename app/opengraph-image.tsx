@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const alt =
-  "Kevin Cruz, backend-focused software engineer — systems that hold up under pressure";
+  "Kevin Cruz, backend-focused software engineer — thoughtful systems and reliable infrastructure";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -9,82 +9,114 @@ export default function OpenGraphImage() {
   return new ImageResponse(
     <div
       style={{
+        position: "relative",
+        display: "flex",
         width: "100%",
         height: "100%",
-        display: "flex",
-        position: "relative",
         overflow: "hidden",
-        background: "#050505",
-        color: "#F1EDE6",
-        padding: "64px 72px",
+        background: "#ffd7ce",
+        color: "#f6f1dd",
         fontFamily: "sans-serif",
       }}
     >
       <div
         style={{
           position: "absolute",
-          inset: 0,
+          top: 54,
+          left: 745,
           display: "flex",
-          opacity: 0.22,
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)",
-          backgroundSize: "54px 54px",
+          width: 360,
+          height: 360,
+          borderRadius: "50%",
+          background: "#fff1c8",
+          boxShadow: "0 0 80px rgba(255,241,200,.55)",
         }}
       />
       <div
         style={{
           position: "absolute",
-          width: 500,
-          height: 500,
-          border: "1px solid rgba(239,35,60,.55)",
-          borderRadius: "50%",
-          right: -70,
-          top: 65,
+          inset: "265px -60px auto -60px",
           display: "flex",
+          height: 255,
+          background: "#319966",
+          clipPath: "polygon(0 36%, 14% 14%, 29% 42%, 45% 7%, 61% 39%, 79% 12%, 100% 35%, 100% 100%, 0 100%)",
         }}
       />
       <div
         style={{
           position: "absolute",
-          width: 330,
-          height: 330,
-          border: "1px dashed rgba(241,237,230,.28)",
-          borderRadius: "50%",
-          right: 15,
-          top: 150,
+          inset: "350px -50px 0 -50px",
           display: "flex",
+          background: "#137360",
+          clipPath: "polygon(0 18%, 18% 35%, 34% 11%, 54% 38%, 72% 12%, 88% 29%, 100% 8%, 100% 100%, 0 100%)",
         }}
       />
       <div
         style={{
           position: "absolute",
-          width: 10,
-          height: 10,
-          background: "#EF233C",
-          borderRadius: "50%",
-          right: 176,
-          top: 310,
+          inset: "430px 0 0",
           display: "flex",
-          boxShadow: "0 0 38px #EF233C",
+          background: "#075458",
+          clipPath: "polygon(0 5%, 22% 21%, 43% 3%, 64% 28%, 82% 7%, 100% 17%, 100% 100%, 0 100%)",
         }}
       />
 
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 22, letterSpacing: 3, textTransform: "uppercase" }}>
-          <span style={{ color: "#EF233C" }}>KC / 01</span>
-          <span style={{ color: "#A7A3A0" }}>Backend-focused software engineer</span>
+      <div
+        style={{
+          position: "relative",
+          display: "flex",
+          width: "100%",
+          padding: "58px 66px 48px",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            color: "#075458",
+            fontSize: 19,
+            fontWeight: 700,
+            letterSpacing: 2.4,
+            textTransform: "uppercase",
+          }}
+        >
+          <span style={{ display: "flex", width: 36, height: 3, background: "#76cf6a" }} />
+          Backend · systems · infrastructure
         </div>
-        <div style={{ display: "flex", flexDirection: "column", maxWidth: 790 }}>
-          <div style={{ display: "flex", fontSize: 86, fontWeight: 700, lineHeight: 0.92, letterSpacing: -3 }}>
-            Systems that hold up under pressure.
-          </div>
-          <div style={{ display: "flex", marginTop: 28, fontSize: 24, color: "#A7A3A0" }}>
-            Backend · systems · automation · verifiable infrastructure
+
+        <div style={{ display: "flex", maxWidth: 810, flexDirection: "column" }}>
+          <div
+            style={{
+              display: "flex",
+              color: "#f6f1dd",
+              fontSize: 78,
+              fontWeight: 700,
+              letterSpacing: -4.5,
+              lineHeight: 0.91,
+              textShadow: "0 4px 30px rgba(4,61,64,.2)",
+            }}
+          >
+            Thoughtful systems grow into reliable infrastructure.
           </div>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", width: 700, paddingTop: 22, borderTop: "1px solid rgba(255,255,255,.18)", color: "#A7A3A0", fontSize: 19 }}>
+
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            paddingTop: 18,
+            justifyContent: "space-between",
+            borderTop: "1px solid rgba(246,241,221,.6)",
+            color: "#f6f1dd",
+            fontSize: 18,
+            fontWeight: 600,
+          }}
+        >
           <span>KEVIN CRUZ</span>
-          <span>CHENNAI / INDIA</span>
+          <span>CHENNAI · INDIA</span>
         </div>
       </div>
     </div>,

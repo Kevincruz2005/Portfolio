@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const routes = [
-  { path: "/", heading: "Systems. Endure." },
+  { path: "/", heading: "Thoughtful systems grow into reliable infrastructure." },
   { path: "/projects", heading: "Projects and experiments." },
   { path: "/about", heading: "Building software from the inside out." },
   { path: "/capabilities", heading: "What I use to build." },
@@ -119,24 +119,28 @@ test("home remains readable with reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.locator(".immersive-cursor-light")).toHaveCSS("display", "none");
+  await expect(page.locator(".calm-birds")).toHaveCSS("display", "none");
 });
 
-test("home fills the desktop viewport and initializes its interactive scene", async ({ page }) => {
+test("home uses a viewport stage inside an extended scroll story and loads its landscape", async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
 
-  await expect(page.locator(".immersive-scene-stage")).toHaveClass(/is-loaded/, {
-    timeout: 45_000,
-  });
-  await expect(page.locator(".immersive-spline-canvas canvas")).toHaveCount(1);
+  const landscape = page.locator(".calm-landscape-image");
+  await expect(landscape).toBeVisible();
+  await expect
+    .poll(() => landscape.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0))
+    .toBe(true);
 
   const layout = await page.evaluate(() => {
-    const hero = document.querySelector<HTMLElement>(".immersive-hero");
+    const hero = document.querySelector<HTMLElement>(".calm-hero");
+    const stage = document.querySelector<HTMLElement>(".calm-hero-stage");
     return {
       width: hero?.getBoundingClientRect().width,
-      height: hero?.getBoundingClientRect().height,
+      heroHeight: hero?.getBoundingClientRect().height,
+      stageHeight: stage?.getBoundingClientRect().height,
+      stagePosition: stage ? window.getComputedStyle(stage).position : null,
       viewportWidth: window.innerWidth,
       viewportHeight: window.innerHeight,
       documentWidth: document.documentElement.scrollWidth,
@@ -145,27 +149,38 @@ test("home fills the desktop viewport and initializes its interactive scene", as
   });
 
   expect(layout.width).toBe(layout.viewportWidth);
-  expect(layout.height).toBe(layout.viewportHeight);
+  expect(layout.heroHeight).toBeGreaterThan(layout.viewportHeight * 1.5);
+  expect(layout.stageHeight).toBe(layout.viewportHeight);
+  expect(layout.stagePosition).toBe("sticky");
   expect(layout.documentWidth).toBe(layout.viewportWidth);
-  expect(layout.documentHeight).toBe(layout.viewportHeight);
+  expect(layout.documentHeight).toBeGreaterThan(layout.viewportHeight * 2);
 });
 
-test("mobile home places readable copy before the 3D scene", async ({ page }) => {
+test("project archive provides a static readable grid for reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/projects");
+
+  await expect(page.locator(".project-stack-card")).toHaveCount(11);
+  await expect(page.locator(".project-stack-card").last()).toBeVisible();
+  await expect(page.locator(".project-scroll-stage")).toHaveCSS("position", "relative");
+});
+
+test("mobile home keeps its content clear of the footer", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
 
   const layout = await page.evaluate(() => {
-    const copy = document.querySelector<HTMLElement>(".immersive-copy");
-    const scene = document.querySelector<HTMLElement>(".immersive-scene-stage");
+    const copy = document.querySelector<HTMLElement>(".calm-hero-content");
+    const footer = document.querySelector<HTMLElement>(".calm-home-footer");
     return {
       copyTop: copy?.getBoundingClientRect().top,
       copyBottom: copy?.getBoundingClientRect().bottom,
-      sceneTop: scene?.getBoundingClientRect().top,
+      footerTop: footer?.getBoundingClientRect().top,
     };
   });
 
-  expect(layout.copyTop).toBe(0);
-  expect(layout.sceneTop).toBeGreaterThanOrEqual((layout.copyBottom ?? 0) - 1);
+  expect(layout.copyTop).toBeGreaterThan(300);
+  expect(layout.footerTop).toBeGreaterThan((layout.copyBottom ?? 0) + 24);
   await expect(page.getByRole("link", { name: "Browse projects" })).toBeVisible();
 });
 

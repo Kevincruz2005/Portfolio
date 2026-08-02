@@ -1,6 +1,6 @@
 # Kevin Cruz — Engineering Portfolio
 
-A multi-page portfolio for Kevin Cruz with a full-viewport interactive Spline hero, a restrained dark editorial component system, and a direct recruiter-readable information architecture.
+A multi-page portfolio for Kevin Cruz built around a calm environmental art direction, a scroll-responsive landscape introduction, and a full-screen editorial project archive.
 
 ![Portfolio home page](docs/screenshots/after-desktop.png)
 
@@ -8,13 +8,13 @@ A multi-page portfolio for Kevin Cruz with a full-viewport interactive Spline he
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Full-screen interactive 3D introduction with project and résumé actions |
-| `/projects` | Compact project archive with one GitHub action per card |
+| `/` | Extended landscape introduction with a sticky scroll scene and engineering principles |
+| `/projects` | Scroll-driven stack of 11 projects with one direct GitHub action each |
 | `/about` | Engineering direction, education and journey |
 | `/capabilities` | Skills grouped by engineering function |
 | `/contact` | Email contact form backed by an SMTP API endpoint |
 
-The project archive intentionally behaves as a broad portfolio archive rather than a repository-verification ledger. Some older entries use the GitHub profile as a fallback when no dedicated repository URL is available, following the portfolio owner's stated preference.
+The project archive intentionally behaves as a broad portfolio archive rather than a repository-verification ledger. Older entries may use the GitHub profile as a fallback when no dedicated repository URL is available, following the portfolio owner’s stated preference.
 
 ## Local preview
 
@@ -26,7 +26,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-The pages render without email credentials, but message delivery requires these server-side variables:
+Message delivery requires these server-side variables:
 
 ```dotenv
 SMTP_HOST=
@@ -36,7 +36,7 @@ SMTP_PASS=
 CONTACT_EMAIL=
 ```
 
-The contact endpoint validates field lengths and email format, ignores honeypot submissions, escapes HTML, keeps credentials server-side and uses the sender address only as `replyTo`.
+The contact endpoint validates field lengths and email format, ignores honeypot submissions, escapes HTML, keeps credentials server-side, and uses the sender address only as `replyTo`.
 
 ## Verification
 
@@ -48,33 +48,29 @@ npm test
 npm audit --omit=dev
 ```
 
-The Playwright suite covers every route, five target viewports, horizontal overflow, page navigation, keyboard dismissal, skip-link focus, GitHub-only archive actions, the email check/unlock flow, malformed API input, reduced motion, no-JavaScript project content, Axe accessibility checks, résumé delivery, mobile hero ordering, full-viewport sizing and live Spline canvas initialization.
+The Playwright suite covers every route, five target viewports, horizontal overflow, navigation, keyboard behavior, the email check/unlock flow, malformed API input, reduced-motion fallbacks, no-JavaScript project content, Axe accessibility checks, résumé delivery, the extended home stage, and the project stack.
 
-The Spline scene is loaded directly from its supplied production URL. A loading state preserves the full frame while the WebGL scene initializes; the rest of the site does not depend on that scene.
+## Visual system
+
+- DM Sans throughout for a quiet, coherent editorial voice.
+- Deep teal, cream, leaf green, and coral shared across every route.
+- The supplied landscape is rendered through Next Image, with layered CSS hills, mist, leaves, birds, pointer depth, and scroll-linked movement.
+- The project archive uses semantic articles inside a sticky stage. Its GPU-friendly transforms are driven directly by scroll position without another dependency.
+- Reduced-motion users receive a static project grid and a still, fully readable landscape.
 
 ## Design and content records
 
-- [`design-system/MASTER.md`](design-system/MASTER.md) defines the palette, typography, responsive rules, component behavior and motion policy.
-- [`CONTENT_INVENTORY.md`](CONTENT_INVENTORY.md) records content decisions and the user-directed archive revision.
-- [`SOURCES.md`](SOURCES.md) records design research, licenses and official implementation references.
+- [`design-system/MASTER.md`](design-system/MASTER.md) defines the current visual and interaction system.
+- [`CONTENT_INVENTORY.md`](CONTENT_INVENTORY.md) records content decisions and project-archive boundaries.
+- [`SOURCES.md`](SOURCES.md) records supplied references, assets, and implementation sources.
 - [`resume/Kevin_Cruz_Resume.html`](resume/Kevin_Cruz_Resume.html) is the editable source for [`public/Kevin_Cruz_Resume.pdf`](public/Kevin_Cruz_Resume.pdf).
-
-## Screenshots
-
-| Home | Projects |
-| --- | --- |
-| ![Home page](docs/screenshots/after-desktop.png) | ![Project archive](docs/screenshots/projects-desktop.png) |
-
-| Contact | Mobile projects |
-| --- | --- |
-| ![Email contact page](docs/screenshots/contact-desktop.png) | ![Project archive on mobile](docs/screenshots/projects-mobile.png) |
 
 ## Stack
 
-- Next.js App Router, React and TypeScript
-- Tailwind CSS v4 and a custom token-driven CSS system
-- Spline React and runtime for the homepage WebGL environment
-- Motion for progressive-enhancement animation
+- Next.js App Router, React, and TypeScript
+- Tailwind CSS v4 plus a custom token-driven CSS system
+- Motion for shared progressive-enhancement behavior
+- RequestAnimationFrame for the scroll-linked project and landscape scenes
 - Nodemailer for server-side SMTP delivery
 - Lucide icons
 - Playwright and Axe for browser and accessibility checks

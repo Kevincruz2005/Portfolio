@@ -2,9 +2,9 @@
 
 ## Direction
 
-An immersive engineering portfolio: the homepage uses a seamless black, full-viewport 3D environment with high-contrast recruiter copy and a restrained violet interaction signal. Supporting routes use the same dark editorial product language—floating capsule navigation, soft bordered surfaces, serif headings and plain UI copy.
+A calm environmental engineering portfolio. The visual language combines warm illustrated landscape tones with deep teal product surfaces, concise recruiter-readable copy, and editorial scroll interaction. The result should feel crafted and memorable without obscuring project evidence or navigation.
 
-The homepage is intentionally more cinematic than the archive routes, but its primary content remains ordinary semantic HTML above the WebGL layer. Motion is interruptible and reduced-motion users receive static transitions with no cursor light.
+The homepage is a two-chapter experience: a sticky landscape stage followed by an engineering-principles section. The project route is a full-screen stack of paper-like cards tied directly to scroll. Supporting pages remain quieter and use the same palette, pill navigation, typography, and action geometry.
 
 ## Foundations
 
@@ -12,117 +12,95 @@ The homepage is intentionally more cinematic than the archive routes, but its pr
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `--void` | `#070708` | Page background |
-| `--carbon` | `#0D0D10` | Deep surface |
-| `--raised` | `#141418` | Elevated surface |
-| `--signal` | `#A78BFA` | Primary violet accent |
-| `--signal-bright` | `#C4B5FD` | Focus, icons and emphasis |
-| `--bone` | `#F6F4F0` | Primary text and light actions |
-| `--secondary` | `#AAA9B1` | Secondary text |
-| `--quiet` | `#8D8C95` | Tertiary labels |
-| `--border` | `rgba(255,255,255,0.09)` | Component edges |
-| `--surface` | `rgba(17,17,21,0.92)` | Shared cards and forms |
+| `--dark-teal` | `#075458` | Primary page and landscape foreground |
+| `--deep-teal` | `#06494D` | Deep surfaces and card ink |
+| `--cream` | `#F6F1DD` | Primary text and warm project paper |
+| `--green` | `#76CF6A` | Landscape life, rules, and small signals |
+| `--signal-bright` | `#C7E99D` | Pale-green icon wells and emphasis |
+| `--coral` | `#FF907D` | Primary actions and progress indicators |
+| `--border` | `rgba(246,241,221,.16)` | Quiet component edges |
+| `--surface` | `rgba(6,73,77,.88)` | Shared route cards and forms |
 
-Violet is used sparingly for focus, icon wells, status dots and selected words. Primary actions use a warm near-white surface with dark text; decorative color never carries meaning alone.
+Cream and pale-green text meet AA contrast on teal. Small card metadata uses solid deep teal rather than reduced opacity so it remains readable on every paper colour.
 
 ### Typography
 
-- Display: DM Serif Display, 400, large editorial headlines.
-- Body/UI: Inter, 400–700, 16px minimum body copy.
-- Technical metadata: JetBrains Mono, 400–600, uppercase labels only.
-- Immersive homepage: Inter, 400–700, with a two-line `clamp()` headline.
-- Desktop text measure: 60–72 characters; mobile: 35–60 characters.
-- Heading scale: `clamp()` based, with no clipped words at 200% zoom.
-
-All fonts use `next/font` so they are self-hosted and do not create third-party runtime requests.
+- Family: DM Sans, 400–700, self-hosted through `next/font`.
+- Headlines: 600–700 with tight tracking and compact line-height.
+- Body: 400–500 with 1.6–1.75 line-height.
+- Interface labels: 600–700, uppercase only for short metadata.
+- Text remains ordinary semantic HTML; decorative archive typography is hidden from assistive technology.
 
 ### Spacing and geometry
 
 - Base rhythm: 4/8px.
-- Content width: 1200px maximum, responsive gutters of 20/32/48px.
-- Section rhythm: 80px mobile, 120–144px desktop.
-- Corners: full pills for actions and labels; 16–28px for cards, forms and floating navigation.
-- Depth: low-contrast borders, dark surfaces and soft shadows; glass effects are limited to navigation and small overlays.
-- Z-index scale: 0 / 10 / 20 / 40 / 50.
+- Content width: 1200px maximum with responsive gutters.
+- Navigation and actions: full pills with a 44px minimum target.
+- Supporting route surfaces: 16–28px corners.
+- Project-stack cards: intentionally square, sharp paper sheets with no border.
+- Shadows remain diffuse and low saturation.
 
 ## Information hierarchy
 
-1. Sticky restrained navigation and résumé access shared across routes.
-2. Home: role, value proposition, project action, résumé and interactive 3D environment.
-3. Projects: compact archive cards with a single GitHub action.
-4. About: engineering direction, education and journey.
-5. Capabilities grouped by engineering function; no percentages.
-6. Contact: an SMTP-backed email form with visible delivery feedback.
+1. Fixed capsule navigation and résumé access.
+2. Landscape, role, value proposition, and primary actions.
+3. Engineering principles on the extended home chapter.
+4. Projects as a scroll-linked archive with one GitHub action per card.
+5. About, capabilities, and direct email contact on separate endpoints.
 
-The site uses `/projects`, `/about`, `/capabilities`, and `/contact` as real pages rather than anchor targets on one long document.
+## Signature components
 
-## Components
+### Landscape stage
 
-### Buttons and links
+- The stage sticks for the first desktop scroll chapter while the parent section provides the scroll distance.
+- The source landscape begins below the navigation so its figure is never covered.
+- CSS hills, mist, leaves, birds, and pointer depth extend the artwork.
+- Scroll progress moves layers at different rates and gently reduces foreground-copy prominence.
+- Mobile uses an extended natural-flow composition to protect content and footer spacing.
 
-- Minimum target: 44×44px, with at least 8px separation.
-- Primary: near-white surface with dark text and a fully rounded silhouette.
-- Secondary: transparent dark surface with a subtle white border.
-- Hover: short lift or a controlled surface inversion; never a large glow.
-- Pressed: no layout shift; use opacity/background state.
-- Focus: 2px `--signal-bright` outline with 3px offset.
+### Project stack
 
-### Navigation
+- Eleven semantic `article` elements represent the real archive.
+- The active card is centered and flat; the next card remains visible beneath it at a slight clockwise angle.
+- As scroll advances, the active card lifts, rotates counter-clockwise, scales down, and fades while the next card settles.
+- Background words drift subtly behind the cards.
+- Each card contains title, description, technologies, a large index, and exactly one GitHub link.
+- A quiet `01 — 11` index and coral side marker provide orientation.
 
-- Floating at the top in one rounded translucent shell.
-- Desktop uses visible text links; mobile uses a native button disclosure.
-- Mobile button exposes `aria-expanded`, `aria-controls`, and closes on Escape or link selection.
-- The current section is indicated by a quiet filled pill and text weight, never colour alone.
+### Buttons and navigation
 
-### Project archive
+- Minimum interactive target: 44×44px.
+- Primary actions use coral with dark-teal ink.
+- Secondary actions use transparent teal with a cream border.
+- Hover behavior is a short lift or surface inversion, with no exaggerated glow.
+- Focus uses a visible coral outline and offset.
 
-- Compact responsive cards echo the older archive styling requested by the portfolio owner.
-- Every card contains a title, short description, technology tags and exactly one GitHub link.
-- GitHub profile URLs may be used as explicit archive fallbacks when a dedicated project repository is unavailable.
-- No project system diagrams, live-demo buttons, proof visualizations or hover-hidden content.
+### Contact
 
-### Email contact
-
-- Name, reply email and message fields use visible labels and native form semantics.
-- The check action validates email format and unlocks the message field without claiming inbox ownership or deliverability.
-- SMTP credentials remain server-only; the API validates length, escapes HTML and includes a honeypot.
-- Disabled, sending, success and error states remain understandable without colour alone.
-
-## Motion
-
-- Primary system: Motion imported from `motion/react`.
-- Global policy: `<MotionConfig reducedMotion="user">`.
-- Signature sequence: Spline scene reveal, left-copy entrance, quiet live-status float and spring-smoothed cursor light.
-- Entrances: opacity + short translate, 240–800ms, once per section.
-- Micro-interactions: 150–240ms.
-- Scroll progress: transform-only scale.
-- No boot sequence, scroll hijacking, autoplay video, bouncing, or paragraph-by-paragraph animation.
-- `prefers-reduced-motion` removes entrance transforms, cursor lighting and smooth scrolling while keeping content visible.
-
-Anime.js was evaluated for SVG drawing, timelines, and staggered nodes. It is intentionally not installed because Motion's SVG `pathLength` and CSS keyframes cover the single signature sequence without a second runtime.
+- Visible labels and native form semantics.
+- The email check validates syntax and unlocks the message field without making a deliverability claim.
+- SMTP credentials stay server-only; the endpoint validates, escapes, and includes a honeypot.
 
 ## Responsive behavior
 
-- Mobile-first; every route is validated at 360×800, 390×844, 768×1024, 1280×720, and 1440×900.
-- No horizontal scroll at 200% zoom.
-- Project cards move from three columns to two and then one readable column.
-- Desktop keeps the scene across the viewport with its subject biased right; widths at or below 900px place the copy before the scene in normal reading order.
-- At 580px and below, actions stack full width and secondary feature metadata is hidden.
-- Cursor lighting responds only to mouse input and is disabled for reduced motion.
+- Validated at 360×800, 390×844, 768×1024, 1280×720, and 1440×900.
+- No horizontal scroll.
+- Project cards use roughly 37% of desktop width and 78% of mobile width, constrained by viewport height.
+- Home actions stack on mobile; the landscape remains above the copy and the footer remains below it.
+- Supporting route grids reduce to one column without changing component language.
 
-## Accessibility and performance gates
+## Motion and accessibility
 
-- WCAG 2.2 AA target.
-- Semantic landmarks and sequential heading hierarchy.
-- Skip link, visible focus, descriptive external-link labels, and decorative SVGs hidden from assistive technology.
-- Contrast: body text ≥4.5:1; non-text/focus boundaries ≥3:1.
-- Server Components by default; Client Components only for navigation, reveal/progress, contact behavior and the interactive hero.
-- WebGL is confined to the homepage Spline scene and loaded client-side with an explicit loading state. There are no runtime GitHub API calls or particle engines.
-- Metadata, canonical URL, JSON-LD, robots, sitemap, favicon, and generated OG artwork are required.
+- Scroll motion is linked directly to progress and smoothed with lightweight interpolation.
+- Transforms use `translate3d`, rotate, scale, and opacity.
+- `prefers-reduced-motion` removes complex landscape effects and converts the project stack to a static two/one-column grid.
+- Semantic landmarks, sequential headings, skip link, visible focus, descriptive external-link labels, and decorative `aria-hidden` layers are required.
+- WCAG 2.2 AA is the target; automated serious and critical Axe findings block completion.
 
-## Anti-patterns
+## Boundaries
 
-- No copyrighted Marvel/Netflix assets, logos, dialogue, character depictions, or soundtrack.
-- No invented metrics, employment, clients, testimonials, awards, or proficiency scores.
-- No fake terminal, fake deliverability verification, hidden essential content, emoji icons, or hover-only affordances.
-- No gradient panels, oversized empty hero, inconsistent card geometries, or decorative skill-logo cloud. The only gradient is the homepage display-text treatment.
+- No fake metrics, employment, clients, awards, proficiency percentages, or deliverability claims.
+- No project diagrams, live-demo buttons, or hidden proof panels.
+- No copyrighted franchise assets or branding.
+- No WebGL, particle engine, autoplay media, or scroll hijacking.
+- The background image is the owner-supplied landscape recorded in `SOURCES.md`.

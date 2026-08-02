@@ -1,237 +1,267 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { motion } from "framer-motion";
-import { Send, Lock, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import {
+  AlertCircle,
+  ArrowUpRight,
+  CheckCircle2,
+  Github,
+  Linkedin,
+  LoaderCircle,
+  LockKeyhole,
+  Send,
+} from "lucide-react";
+
+type FormStatus = "idle" | "sending" | "success" | "error";
+type DeliveryStatus = "checking" | "ready" | "unavailable";
+
+const initialForm = {
+  name: "",
+  email: "",
+  message: "",
+  website: "",
+};
 
 export function Contact() {
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        message: "",
-        _gotcha: "", // Honeypot field
-    });
-    const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-    const [verificationStatus, setVerificationStatus] = useState<"idle" | "verifying" | "verified">("idle");
-    const [errorMessage, setErrorMessage] = useState("");
+  const [form, setForm] = useState(initialForm);
+  const [emailChecked, setEmailChecked] = useState(false);
+  const [status, setStatus] = useState<FormStatus>("idle");
+  const [deliveryStatus, setDeliveryStatus] = useState<DeliveryStatus>("checking");
+  const [feedback, setFeedback] = useState("");
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
 
-    const handleVerifyParams = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        if (!emailRegex.test(formData.email)) {
-            alert("Please enter a valid email format first.");
-            return;
-        }
-        setVerificationStatus("verifying");
-        // Simulate an API verification check
-        setTimeout(() => {
-            setVerificationStatus("verified");
-        }, 1500);
-    };
+  useEffect(() => {
+    const controller = new AbortController();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    fetch("/api/contact", { signal: controller.signal, cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Unable to check email delivery.");
+        return response.json() as Promise<{ configured?: boolean }>;
+      })
+      .then((result) => {
+        setDeliveryStatus(result.configured ? "ready" : "unavailable");
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setDeliveryStatus("unavailable");
+      });
 
-        // Anti-Spam: Honeypot check
-        if (formData._gotcha) {
-            // Silently fail for bots
-            setStatus("success");
-            setFormData({ name: "", email: "", message: "", _gotcha: "" });
-            setVerificationStatus("idle");
-            setTimeout(() => setStatus("idle"), 3000);
-            return;
-        }
+    return () => controller.abort();
+  }, []);
 
-        if (verificationStatus !== "verified") return;
+  const checkEmail = () => {
+    if (deliveryStatus !== "ready") {
+      setFeedback("Email delivery is being configured. Please use GitHub or LinkedIn for now.");
+      return;
+    }
+    setEmailChecked(emailIsValid);
+    setFeedback(emailIsValid ? "Looks good. You can write your message now." : "Enter a valid email address first.");
+  };
 
-        setStatus("loading");
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (deliveryStatus !== "ready") {
+      setFeedback("Email delivery is being configured. Please use GitHub or LinkedIn for now.");
+      return;
+    }
 
-        try {
-            const response = await fetch("/api/contact", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                    message: formData.message
-                }), // Exclude _gotcha from payload
-            });
+    if (!emailChecked || !emailIsValid) {
+      setFeedback("Check your email address before sending.");
+      return;
+    }
 
-            if (response.ok) {
-                setStatus("success");
-                setFormData({ name: "", email: "", message: "", _gotcha: "" });
-                setVerificationStatus("idle");
-                setErrorMessage("");
-                setTimeout(() => setStatus("idle"), 3000);
-            } else {
-                const data = await response.json();
-                console.error("Server error:", data.error);
-                setStatus("error");
-                setErrorMessage(data.error || "Unknown error occurred");
-                setTimeout(() => {
-                    setStatus("idle");
-                    setErrorMessage("");
-                }, 5000);
-            }
-        } catch (error) {
-            console.error("Submission error:", error);
-            setStatus("error");
-            setErrorMessage("Network connection failed");
-            setTimeout(() => {
-                setStatus("idle");
-                setErrorMessage("");
-            }, 5000);
-        }
-    };
+    setStatus("sending");
+    setFeedback("Sending your message…");
 
-    return (
-        <section id="contact" className="py-20 relative">
-            <div className="container mx-auto px-4">
-                <div className="max-w-2xl mx-auto">
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="bg-surface border border-accent-primary/30 p-1 rounded-lg shadow-lg"
-                    >
-                        <div className="bg-surface-2 p-8 rounded border border-white/5 relative overflow-hidden">
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const result = (await response.json()) as { error?: string };
 
-                            <div className="relative z-10">
-                                <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
-                                    <h2 className="text-2xl font-bold text-text-primary tracking-widest flex items-center gap-2">
-                                        <Lock className="w-5 h-5 text-success" />
-                                        ENCRYPTED_CHANNEL
-                                    </h2>
-                                    <div className="text-[10px] font-mono text-success animate-pulse">
-                                        SECURE CONNECTION ESTABLISHED
-                                    </div>
-                                </div>
+      if (!response.ok) {
+        throw new Error(result.error || "The message could not be sent.");
+      }
 
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    {/* Honeypot Field (Hidden) */}
-                                    <div className="hidden" aria-hidden="true">
-                                        <input
-                                            type="text"
-                                            name="_gotcha"
-                                            tabIndex={-1}
-                                            value={formData._gotcha}
-                                            onChange={(e) => setFormData({ ...formData, _gotcha: e.target.value })}
-                                            autoComplete="off"
-                                        />
-                                    </div>
+      setStatus("success");
+      setFeedback("Message sent. I’ll get back to you through the email address provided.");
+      setForm(initialForm);
+      setEmailChecked(false);
+    } catch (error) {
+      setStatus("error");
+      setFeedback(error instanceof Error ? error.message : "The message could not be sent.");
+    }
+  };
 
-                                    <div className="grid gap-2">
-                                        <label className="text-xs text-accent-primary font-mono uppercase tracking-wider">Identity</label>
-                                        <Input
-                                            required
-                                            value={formData.name}
-                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="bg-white/5 border-white/10 text-white font-mono focus:border-accent-primary focus:ring-0 transition-colors"
-                                            placeholder="ENTER_NAME"
-                                            disabled={status === "loading"}
-                                        />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <label className="text-xs text-accent-primary font-mono uppercase tracking-wider">Frequency (Email)</label>
-                                        <div className="flex gap-2">
-                                            <Input
-                                                required
-                                                type="email"
-                                                value={formData.email}
-                                                onChange={(e) => {
-                                                    setFormData({ ...formData, email: e.target.value });
-                                                    if (verificationStatus === "verified") setVerificationStatus("idle");
-                                                }}
-                                                className={`bg-white/5 border-white/10 text-white font-mono focus:border-accent-primary focus:ring-0 transition-colors flex-1 ${verificationStatus === "verified" ? "border-success/50 text-success" : ""}`}
-                                                placeholder="ENTER_EMAIL"
-                                                disabled={status === "loading" || verificationStatus === "verifying"}
-                                            />
-                                            {verificationStatus !== "verified" && (
-                                                <Button
-                                                    type="button"
-                                                    onClick={handleVerifyParams}
-                                                    disabled={verificationStatus === "verifying" || !formData.email}
-                                                    className="bg-accent-primary/10 text-accent-primary border border-accent-primary/50 hover:bg-accent-primary/20"
-                                                >
-                                                    {verificationStatus === "verifying" ? <Loader2 className="w-4 h-4 animate-spin" /> : "VERIFY"}
-                                                </Button>
-                                            )}
-                                            {verificationStatus === "verified" && (
-                                                <div className="flex items-center justify-center px-4 bg-success/10 border border-success/30 rounded text-success">
-                                                    <CheckCircle className="w-5 h-5" />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+  return (
+    <section className="section contact-route" aria-labelledby="contact-heading">
+      <div className="page-shell contact-route-layout">
+        <div className="contact-route-intro">
+          <p className="eyebrow">Contact / 04</p>
+          <h1 id="contact-heading">Send a direct message.</h1>
+          <p>
+            Have a role, collaboration, or technical problem in mind? Share the
+            details here and I can reply directly to your email.
+          </p>
+          <div className={`contact-channel-state is-${deliveryStatus}`}>
+            <span aria-hidden="true" />
+            {deliveryStatus === "checking"
+              ? "Checking email delivery"
+              : deliveryStatus === "ready"
+                ? "Email delivery ready"
+                : "Email setup required"}
+          </div>
 
-                                    <div className="grid gap-2 relative">
-                                        <label className="text-xs text-accent-primary font-mono uppercase tracking-wider">Transmission</label>
-                                        <div className="relative">
-                                            <Textarea
-                                                required
-                                                value={formData.message}
-                                                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                                className={`bg-white/5 border-white/10 text-white font-mono focus:border-accent-primary focus:ring-0 min-h-[150px] transition-colors ${verificationStatus !== "verified" ? "opacity-50 grayscale blur-[2px]" : ""}`}
-                                                placeholder="TYPE_MESSAGE..."
-                                                disabled={status === "loading" || verificationStatus !== "verified"}
-                                            />
-                                            {verificationStatus !== "verified" && (
-                                                <div className="absolute inset-0 flex items-center justify-center z-10">
-                                                    <div className="bg-black/80 px-4 py-2 rounded border border-white/10 text-xs text-text-muted flex items-center gap-2">
-                                                        <Lock className="w-3 h-3" />
-                                                        VERIFY_EMAIL_TO_UNLOCK
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+          <nav className="contact-fallback-links" aria-label="Alternative contact methods">
+            <a href="https://github.com/Kevincruz2005" target="_blank" rel="noreferrer">
+              <Github aria-hidden="true" />
+              GitHub
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/kevin-cruz-32a8642ba/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Linkedin aria-hidden="true" />
+              LinkedIn
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+          </nav>
+        </div>
 
-                                    <Button
-                                        type="submit"
-                                        disabled={status === "loading" || verificationStatus !== "verified"}
-                                        className={`w-full font-mono tracking-widest h-12 group transition-all duration-300 ${status === "success"
-                                            ? "bg-success/20 text-success border-success"
-                                            : status === "error"
-                                                ? "bg-error/20 text-error border-error"
-                                                : "bg-accent-primary/10 hover:bg-accent-primary/20 text-accent-primary border border-accent-primary/50 hover:border-accent-primary"
-                                            }`}
-                                    >
-                                        {status === "loading" ? (
-                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                        ) : status === "success" ? (
-                                            <CheckCircle className="w-4 h-4 mr-2" />
-                                        ) : status === "error" ? (
-                                            <AlertCircle className="w-4 h-4 mr-2" />
-                                        ) : (
-                                            <Send className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform" />
-                                        )}
-                                        {status === "loading" ? "TRANSMITTING..." :
-                                            status === "success" ? "TRANSMISSION_COMPLETE" :
-                                                status === "error" ? "TRANSMISSION_FAILED" :
-                                                    "INITIATE_SEND"}
-                                    </Button>
-
-                                    {status === "error" && errorMessage && (
-                                        <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: "auto" }}
-                                            className="text-xs text-error font-mono text-center bg-error/10 p-2 rounded border border-error/20"
-                                        >
-                                            ERROR: {errorMessage}
-                                        </motion.div>
-                                    )}
-                                </form>
-                            </div>
-                        </div>
-                    </motion.div>
-                </div>
+        <form className="contact-form" onSubmit={submit}>
+          <header className="contact-form-header">
+            <div>
+              <LockKeyhole aria-hidden="true" />
+              <span>Send me a message</span>
             </div>
-        </section>
-    );
+            <span>Direct email</span>
+          </header>
+
+          {deliveryStatus === "unavailable" ? (
+            <p className="contact-setup-note" role="status">
+              The direct email channel needs its private server credentials. You can
+              still reach me through the verified links beside this form.
+            </p>
+          ) : null}
+
+          <div className="honeypot-field" aria-hidden="true">
+            <label htmlFor="website">Website</label>
+            <input
+              id="website"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              value={form.website}
+              onChange={(event) => setForm({ ...form, website: event.target.value })}
+            />
+          </div>
+
+          <label className="contact-field" htmlFor="contact-name">
+            <span>Name</span>
+            <input
+              id="contact-name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              minLength={2}
+              maxLength={100}
+              required
+              value={form.name}
+              onChange={(event) => setForm({ ...form, name: event.target.value })}
+              disabled={status === "sending"}
+              placeholder="Your name"
+            />
+          </label>
+
+          <div className="contact-field">
+            <label htmlFor="contact-email">Reply email</label>
+            <div className="email-check-row">
+              <input
+                id="contact-email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                maxLength={254}
+                required
+                value={form.email}
+                onChange={(event) => {
+                  setForm({ ...form, email: event.target.value });
+                  setEmailChecked(false);
+                }}
+                disabled={status === "sending"}
+                placeholder="you@example.com"
+                aria-describedby="contact-feedback"
+              />
+              <button
+                type="button"
+                className={emailChecked ? "email-check is-checked" : "email-check"}
+                onClick={checkEmail}
+                disabled={status === "sending" || deliveryStatus !== "ready" || !form.email}
+              >
+                {emailChecked ? <CheckCircle2 aria-hidden="true" /> : null}
+                {emailChecked ? "Verified" : "Verify email"}
+              </button>
+            </div>
+          </div>
+
+          <label className="contact-field message-field" htmlFor="contact-message">
+            <span>Message</span>
+            <textarea
+              id="contact-message"
+              name="message"
+              minLength={10}
+              maxLength={5000}
+              required
+              value={form.message}
+              onChange={(event) => setForm({ ...form, message: event.target.value })}
+              disabled={status === "sending" || deliveryStatus !== "ready" || !emailChecked}
+              placeholder={emailChecked ? "Tell me what you are working on…" : "Verify your email to continue"}
+            />
+            {deliveryStatus !== "ready" || !emailChecked ? (
+              <span className="message-lock" aria-hidden="true">
+                <LockKeyhole />
+                {deliveryStatus === "checking"
+                  ? "Checking email channel"
+                  : deliveryStatus === "unavailable"
+                    ? "Email setup required"
+                    : "Check email to unlock"}
+              </span>
+            ) : null}
+          </label>
+
+          <button
+            className={`contact-submit is-${status}`}
+            type="submit"
+            disabled={status === "sending" || deliveryStatus !== "ready" || !emailChecked}
+          >
+            {status === "sending" ? <LoaderCircle className="spin" aria-hidden="true" /> : null}
+            {status === "success" ? <CheckCircle2 aria-hidden="true" /> : null}
+            {status === "error" ? <AlertCircle aria-hidden="true" /> : null}
+            {status === "idle" ? <Send aria-hidden="true" /> : null}
+            {status === "sending"
+              ? "Sending…"
+              : status === "success"
+                ? "Message sent"
+                : status === "error"
+                  ? "Try again"
+                  : "Send message"}
+          </button>
+
+          <p
+            id="contact-feedback"
+            className={`contact-feedback is-${status}`}
+            role={status === "error" ? "alert" : "status"}
+            aria-live="polite"
+          >
+            {feedback || "Your reply address is used only to respond to this message."}
+          </p>
+        </form>
+      </div>
+    </section>
+  );
 }

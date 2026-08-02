@@ -1,100 +1,183 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Folder, ExternalLink } from "lucide-react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, type CSSProperties } from "react";
+import { ArrowUpRight, Github } from "lucide-react";
 import { projects } from "@/lib/data";
 
+const cardColours = ["#f6f1dd", "#c7e99d", "#ffb3a4", "#d9e8d4"];
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
 export function Projects() {
-    return (
-        <section id="projects" className="py-20 relative">
-            <div className="container mx-auto px-4">
-                <div className="flex items-center gap-4 mb-12">
-                    <div className="h-px flex-1 bg-gradient-to-r from-transparent to-accent-primary/50"></div>
-                    <h2 className="text-3xl font-bold text-text-primary tracking-widest flex items-center gap-2">
-                        <LayersIcon className="text-accent-primary" />
-                        PROJECT_ARCHIVES
-                    </h2>
-                    <div className="h-px flex-1 bg-gradient-to-l from-transparent to-accent-primary/50"></div>
-                </div>
+  const storyRef = useRef<HTMLElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
+  const currentRef = useRef<HTMLSpanElement | null>(null);
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {projects.map((project, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            viewport={{ once: true }}
-                        >
-                            <Card className="bg-surface/50 border border-white/10 hover:border-accent-primary/50 transition-all duration-300 group relative overflow-hidden h-full flex flex-col backdrop-blur-sm">
-                                {/* Holographic Overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-b from-accent-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+  useEffect(() => {
+    const story = storyRef.current;
+    const stage = stageRef.current;
+    const currentLabel = currentRef.current;
+    if (!story || !stage || !currentLabel) return;
 
-                                <CardHeader className="pb-2 relative z-10">
-                                    <div className="flex justify-between items-start">
-                                        <CardTitle className="font-mono text-lg text-accent-primary group-hover:text-white transition-colors flex items-center gap-2">
-                                            <Folder className="w-4 h-4" />
-                                            {project.title}
-                                        </CardTitle>
-                                        <div className="text-[10px] text-text-muted font-mono border border-white/10 px-1 rounded">
-                                            ID: {String(index + 1).padStart(3, '0')}
-                                        </div>
-                                    </div>
-                                </CardHeader>
+    const cards = Array.from(
+      story.querySelectorAll<HTMLElement>(".project-stack-card"),
+    );
+    const words = Array.from(
+      story.querySelectorAll<HTMLElement>(".project-background-word"),
+    );
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-                                <CardContent className="relative z-10 flex-1">
-                                    <p className="font-mono text-sm text-text-secondary mb-4 line-clamp-3 group-hover:text-text-primary transition-colors">
-                                        {project.description}
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {project.tags.split(",").map((tag: string, i: number) => (
-                                            <span key={i} className="text-[10px] font-mono text-accent-secondary border border-accent-secondary/20 px-2 py-0.5 rounded bg-accent-secondary/5">
-                                                {tag.trim()}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </CardContent>
+    let target = 0;
+    let current = 0;
+    let frame = 0;
+    let displayedIndex = 0;
 
-                                <CardFooter className="pt-4 relative z-10 border-t border-white/5">
-                                    <Link href={project.link || "#"} className="w-full">
-                                        <Button variant="ghost" className="w-full justify-between text-xs font-mono text-text-secondary hover:text-accent-primary hover:bg-accent-primary/10 group-hover:border-accent-primary/30 border border-transparent transition-all">
-                                            <span>ACCESS_SOURCE</span>
-                                            <ExternalLink className="w-3 h-3" />
-                                        </Button>
-                                    </Link>
-                                </CardFooter>
+    const readScroll = () => {
+      const rect = story.getBoundingClientRect();
+      const distance = story.offsetHeight - window.innerHeight;
+      target = distance > 0 ? clamp(-rect.top / distance, 0, 1) : 0;
+    };
 
-                                {/* Corner Accents */}
-                                <div className="absolute top-0 left-0 w-2 h-2 border-l border-t border-accent-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                <div className="absolute bottom-0 right-0 w-2 h-2 border-r border-b border-accent-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            </Card>
-                        </motion.div>
+    const render = () => {
+      current += (target - current) * 0.095;
+      if (Math.abs(target - current) < 0.0001) current = target;
+
+      const scene = current * (projects.length - 1);
+      stage.style.setProperty("--project-progress", current.toFixed(4));
+
+      cards.forEach((card, index) => {
+        const delta = index - scene;
+        const capped = clamp(delta, -1.45, 1.7);
+        const y = capped < 0 ? capped * 158 : capped * 82;
+        const rotation = capped < 0 ? capped * 6.5 : capped * 8;
+        const scale =
+          capped < 0
+            ? 1 - Math.min(Math.abs(capped), 1) * 0.08
+            : 1 - Math.min(capped, 1) * 0.05;
+        const opacity =
+          delta < -0.84
+            ? clamp((delta + 1.2) / 0.36, 0, 1)
+            : delta > 1.28
+              ? clamp((1.68 - delta) / 0.4, 0, 1)
+              : 1;
+
+        card.style.transform = `translate3d(-50%, calc(-50% + ${y}%), 0) rotate(${rotation}deg) scale(${scale})`;
+        card.style.opacity = opacity.toFixed(3);
+        card.style.zIndex = String(100 - Math.round(Math.abs(delta) * 12) + index);
+      });
+
+      words.forEach((word, index) => {
+        const direction = index === 1 ? 1 : -1;
+        const x = scene * (3.5 + index * 1.25) * direction;
+        const y = -scene * (4 + index * 1.8);
+        word.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      });
+
+      const nextIndex = Math.round(scene);
+      if (nextIndex !== displayedIndex) {
+        displayedIndex = nextIndex;
+        currentLabel.textContent = String(nextIndex + 1).padStart(2, "0");
+      }
+
+      frame = window.requestAnimationFrame(render);
+    };
+
+    const start = () => {
+      window.cancelAnimationFrame(frame);
+      readScroll();
+      if (!reducedMotion.matches) frame = window.requestAnimationFrame(render);
+    };
+
+    window.addEventListener("scroll", readScroll, { passive: true });
+    window.addEventListener("resize", readScroll);
+    reducedMotion.addEventListener("change", start);
+    start();
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", readScroll);
+      window.removeEventListener("resize", readScroll);
+      reducedMotion.removeEventListener("change", start);
+    };
+  }, []);
+
+  const storyHeight = `${Math.max(430, 125 + (projects.length - 1) * 68)}svh`;
+
+  return (
+    <section
+      ref={storyRef}
+      className="project-scroll-story"
+      style={{ "--project-story-height": storyHeight } as CSSProperties}
+      aria-labelledby="projects-heading"
+    >
+      <div ref={stageRef} className="project-scroll-stage">
+        <div className="project-story-intro">
+          <p>Selected build archive</p>
+          <h1 id="projects-heading">Projects and experiments.</h1>
+          <span>Scroll to move through the stack</span>
+        </div>
+
+        <div className="project-background-type" aria-hidden="true">
+          <span className="project-background-word project-background-word-one">
+            PROJECT
+          </span>
+          <span className="project-background-word project-background-word-two">
+            ARCHIVE
+          </span>
+          <span className="project-background-word project-background-word-three">
+            WORK
+          </span>
+        </div>
+
+        <div className="project-card-stack">
+          {projects.map((project, index) => (
+            <article
+              className="project-stack-card project-archive-card"
+              key={`${project.title}-${index}`}
+              style={{ backgroundColor: cardColours[index % cardColours.length] }}
+            >
+              <header className="project-stack-heading">
+                <p>Project / {String(index + 1).padStart(2, "0")}</p>
+                <h2>{project.title}</h2>
+                <p>{project.description}</p>
+              </header>
+
+              <footer className="project-stack-footer">
+                <div>
+                  <ul aria-label={`${project.title} technologies`}>
+                    {project.tags.map((tag) => (
+                      <li key={tag}>{tag}</li>
                     ))}
+                  </ul>
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`GitHub source for ${project.title} — opens in a new tab`}
+                  >
+                    <Github aria-hidden="true" />
+                    GitHub
+                    <ArrowUpRight aria-hidden="true" />
+                  </a>
                 </div>
-            </div>
-        </section>
-    );
-}
+                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              </footer>
+            </article>
+          ))}
+        </div>
 
-function LayersIcon({ className }: { className?: string }) {
-    return (
-        <svg
-            className={className}
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <polygon points="12 2 2 7 12 12 22 7 12 2" />
-            <polyline points="2 17 12 22 22 17" />
-            <polyline points="2 12 12 17 22 12" />
-        </svg>
-    );
+        <div className="project-side-mark" aria-hidden="true">
+          <strong>KC.</strong>
+          <span>GitHub archive</span>
+        </div>
+
+        <div className="project-scroll-index" aria-hidden="true">
+          <span ref={currentRef}>01</span>
+          <i />
+          <span>{String(projects.length).padStart(2, "0")}</span>
+        </div>
+      </div>
+    </section>
+  );
 }

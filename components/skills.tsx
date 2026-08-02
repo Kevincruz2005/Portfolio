@@ -20,6 +20,12 @@ export function Skills() {
       className="section capabilities-section"
       aria-labelledby="capabilities-heading"
     >
+      <div className="capabilities-atmosphere" aria-hidden="true">
+        <span>BUILD</span>
+        <span>SYSTEMS</span>
+        <i />
+      </div>
+
       <div className="page-shell">
         <SectionHeading
           as="h1"

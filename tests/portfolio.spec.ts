@@ -95,7 +95,19 @@ test("all routes have no serious automated accessibility violations", async ({ p
 });
 
 test("email contact restores the check-and-unlock flow", async ({ page }) => {
+  await page.route("**/api/contact", async (route) => {
+    if (route.request().method() === "GET") {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ configured: true }),
+      });
+      return;
+    }
+    await route.continue();
+  });
   await page.goto("/contact");
+  await expect(page.getByText("Email delivery ready")).toBeVisible();
   const message = page.getByRole("textbox", { name: "Message", exact: true });
   await expect(message).toBeDisabled();
 
@@ -106,6 +118,20 @@ test("email contact restores the check-and-unlock flow", async ({ page }) => {
   await expect(message).toBeEnabled();
   await message.fill("A valid local test message that is not submitted.");
   await expect(page.getByRole("button", { name: "Send message" })).toBeEnabled();
+});
+
+test("contact page reports unavailable delivery without exposing server configuration", async ({ page }) => {
+  await page.goto("/contact");
+  await expect(page.getByText("Email setup required").first()).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Message", exact: true })).toBeDisabled();
+  await expect(page.getByRole("link", { name: /LinkedIn/ })).toBeVisible();
+});
+
+test("contact readiness endpoint reports a boolean", async ({ request }) => {
+  const response = await request.get("/api/contact");
+  expect(response.ok()).toBeTruthy();
+  const body = (await response.json()) as { configured?: unknown };
+  expect(typeof body.configured).toBe("boolean");
 });
 
 test("contact API rejects malformed input without sending email", async ({ request }) => {

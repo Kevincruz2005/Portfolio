@@ -1,15 +1,19 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   AlertCircle,
+  ArrowUpRight,
   CheckCircle2,
+  Github,
+  Linkedin,
   LoaderCircle,
   LockKeyhole,
   Send,
 } from "lucide-react";
 
 type FormStatus = "idle" | "sending" | "success" | "error";
+type DeliveryStatus = "checking" | "ready" | "unavailable";
 
 const initialForm = {
   name: "",
@@ -22,17 +26,46 @@ export function Contact() {
   const [form, setForm] = useState(initialForm);
   const [emailChecked, setEmailChecked] = useState(false);
   const [status, setStatus] = useState<FormStatus>("idle");
+  const [deliveryStatus, setDeliveryStatus] = useState<DeliveryStatus>("checking");
   const [feedback, setFeedback] = useState("");
 
   const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch("/api/contact", { signal: controller.signal, cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Unable to check email delivery.");
+        return response.json() as Promise<{ configured?: boolean }>;
+      })
+      .then((result) => {
+        setDeliveryStatus(result.configured ? "ready" : "unavailable");
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setDeliveryStatus("unavailable");
+      });
+
+    return () => controller.abort();
+  }, []);
+
   const checkEmail = () => {
+    if (deliveryStatus !== "ready") {
+      setFeedback("Email delivery is being configured. Please use GitHub or LinkedIn for now.");
+      return;
+    }
     setEmailChecked(emailIsValid);
     setFeedback(emailIsValid ? "Looks good. You can write your message now." : "Enter a valid email address first.");
   };
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (deliveryStatus !== "ready") {
+      setFeedback("Email delivery is being configured. Please use GitHub or LinkedIn for now.");
+      return;
+    }
+
     if (!emailChecked || !emailIsValid) {
       setFeedback("Check your email address before sending.");
       return;
@@ -73,10 +106,31 @@ export function Contact() {
             Have a role, collaboration, or technical problem in mind? Share the
             details here and I can reply directly to your email.
           </p>
-          <div className="contact-channel-state">
+          <div className={`contact-channel-state is-${deliveryStatus}`}>
             <span aria-hidden="true" />
-            Email delivery enabled
+            {deliveryStatus === "checking"
+              ? "Checking email delivery"
+              : deliveryStatus === "ready"
+                ? "Email delivery ready"
+                : "Email setup required"}
           </div>
+
+          <nav className="contact-fallback-links" aria-label="Alternative contact methods">
+            <a href="https://github.com/Kevincruz2005" target="_blank" rel="noreferrer">
+              <Github aria-hidden="true" />
+              GitHub
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/kevin-cruz-32a8642ba/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Linkedin aria-hidden="true" />
+              LinkedIn
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+          </nav>
         </div>
 
         <form className="contact-form" onSubmit={submit}>
@@ -87,6 +141,13 @@ export function Contact() {
             </div>
             <span>Direct email</span>
           </header>
+
+          {deliveryStatus === "unavailable" ? (
+            <p className="contact-setup-note" role="status">
+              The direct email channel needs its private server credentials. You can
+              still reach me through the verified links beside this form.
+            </p>
+          ) : null}
 
           <div className="honeypot-field" aria-hidden="true">
             <label htmlFor="website">Website</label>
@@ -140,7 +201,7 @@ export function Contact() {
                 type="button"
                 className={emailChecked ? "email-check is-checked" : "email-check"}
                 onClick={checkEmail}
-                disabled={status === "sending" || !form.email}
+                disabled={status === "sending" || deliveryStatus !== "ready" || !form.email}
               >
                 {emailChecked ? <CheckCircle2 aria-hidden="true" /> : null}
                 {emailChecked ? "Verified" : "Verify email"}
@@ -158,12 +219,17 @@ export function Contact() {
               required
               value={form.message}
               onChange={(event) => setForm({ ...form, message: event.target.value })}
-              disabled={status === "sending" || !emailChecked}
+              disabled={status === "sending" || deliveryStatus !== "ready" || !emailChecked}
               placeholder={emailChecked ? "Tell me what you are working on…" : "Verify your email to continue"}
             />
-            {!emailChecked ? (
+            {deliveryStatus !== "ready" || !emailChecked ? (
               <span className="message-lock" aria-hidden="true">
-                <LockKeyhole /> Check email to unlock
+                <LockKeyhole />
+                {deliveryStatus === "checking"
+                  ? "Checking email channel"
+                  : deliveryStatus === "unavailable"
+                    ? "Email setup required"
+                    : "Check email to unlock"}
               </span>
             ) : null}
           </label>
@@ -171,7 +237,7 @@ export function Contact() {
           <button
             className={`contact-submit is-${status}`}
             type="submit"
-            disabled={status === "sending" || !emailChecked}
+            disabled={status === "sending" || deliveryStatus !== "ready" || !emailChecked}
           >
             {status === "sending" ? <LoaderCircle className="spin" aria-hidden="true" /> : null}
             {status === "success" ? <CheckCircle2 aria-hidden="true" /> : null}

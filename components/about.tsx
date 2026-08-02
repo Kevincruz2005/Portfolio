@@ -6,6 +6,13 @@ import { milestones } from "@/lib/data";
 export function About() {
   return (
     <section id="about" className="section about-section" aria-labelledby="about-heading">
+      <div className="about-atmosphere" aria-hidden="true">
+        <span className="about-sun" />
+        <span className="about-contour about-contour-one" />
+        <span className="about-contour about-contour-two" />
+        <strong>Origin / direction</strong>
+      </div>
+
       <div className="page-shell">
         <SectionHeading
           as="h1"
@@ -17,7 +24,10 @@ export function About() {
 
         <div className="about-layout">
           <Reveal className="about-statement">
-            <Radar aria-hidden="true" />
+            <div className="about-statement-header">
+              <Radar aria-hidden="true" />
+              <span>Operating principle</span>
+            </div>
             <p>
               My work keeps moving toward the same question: <strong>what has to
               remain true when the easy path fails?</strong>
@@ -34,8 +44,10 @@ export function About() {
           </Reveal>
 
           <Reveal className="education-file" delay={0.08}>
-            <div className="education-file-label">Education</div>
-            <University aria-hidden="true" />
+            <div className="education-file-topline">
+              <div className="education-file-label">Education</div>
+              <University aria-hidden="true" />
+            </div>
             <h3>B.E. Computer Science and Engineering</h3>
             <p>Loyola-ICAM College of Engineering and Technology</p>
             <dl>

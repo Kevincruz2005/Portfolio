@@ -3,6 +3,20 @@ import nodemailer from "nodemailer";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const getMailConfiguration = () => {
+  const host = process.env.SMTP_HOST?.trim();
+  const port = Number(process.env.SMTP_PORT);
+  const user = process.env.SMTP_USER?.trim();
+  const pass = process.env.SMTP_PASS;
+  const recipient = process.env.CONTACT_EMAIL?.trim() || user;
+
+  if (!host || !Number.isInteger(port) || port < 1 || port > 65535 || !user || !pass || !recipient) {
+    return null;
+  }
+
+  return { host, port, user, pass, recipient };
+};
+
 const escapeHtml = (value: string) =>
   value.replace(
     /[&<>'"]/g,
@@ -15,6 +29,13 @@ const escapeHtml = (value: string) =>
         '"': "&quot;",
       })[character] ?? character,
   );
+
+export async function GET() {
+  return NextResponse.json(
+    { configured: Boolean(getMailConfiguration()) },
+    { headers: { "Cache-Control": "no-store" } },
+  );
+}
 
 export async function POST(request: Request) {
   try {
@@ -42,32 +63,31 @@ export async function POST(request: Request) {
       );
     }
 
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = Number(process.env.SMTP_PORT);
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    const contactEmail = process.env.CONTACT_EMAIL;
+    const mail = getMailConfiguration();
 
-    if (!smtpHost || !smtpPort || !smtpUser || !smtpPass || !contactEmail) {
+    if (!mail) {
       return NextResponse.json(
-        { error: "The email channel is not configured yet. Please use GitHub or LinkedIn for now." },
+        { error: "Email delivery is being configured. Please use GitHub or LinkedIn for now." },
         { status: 503 },
       );
     }
 
     const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465,
-      auth: { user: smtpUser, pass: smtpPass },
+      host: mail.host,
+      port: mail.port,
+      secure: mail.port === 465,
+      auth: { user: mail.user, pass: mail.pass },
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 15_000,
     });
 
     const safeName = name.replace(/[\r\n]/g, " ");
     const safeMessage = escapeHtml(message).replace(/\n/g, "<br />");
 
     await transporter.sendMail({
-      from: `"Kevin Cruz Portfolio" <${smtpUser}>`,
-      to: contactEmail,
+      from: `"Kevin Cruz Portfolio" <${mail.user}>`,
+      to: mail.recipient,
       replyTo: email,
       subject: `Portfolio message from ${safeName}`,
       text: `${message}\n\nFrom: ${name} <${email}>`,

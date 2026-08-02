@@ -1,6 +1,6 @@
-# Kevin Cruz — Engineering Portfolio
+# Kevin Cruz T — Software Engineering Portfolio
 
-A multi-page portfolio for Kevin Cruz built around a calm environmental art direction, a scroll-responsive landscape introduction, and a full-screen editorial project archive.
+A multi-page portfolio for Kevin Cruz T built around the exact content of the current résumé, a calm environmental art direction, a scroll-responsive landscape introduction, and a full-screen editorial project archive.
 
 ![Portfolio home page](docs/screenshots/after-desktop.png)
 
@@ -8,13 +8,13 @@ A multi-page portfolio for Kevin Cruz built around a calm environmental art dire
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Extended landscape introduction with a sticky scroll scene and engineering principles |
-| `/projects` | Scroll-driven stack of 11 projects with one direct GitHub action each |
-| `/about` | Engineering direction, education and journey |
-| `/capabilities` | Skills grouped by engineering function |
+| `/` | Extended landscape introduction with the résumé role and executive summary |
+| `/projects` | Scroll-driven stack of the six résumé projects with one GitHub action each |
+| `/about` | Executive summary, education, coursework and certifications |
+| `/capabilities` | The seven technical-skill groups from the résumé |
 | `/contact` | Email contact form backed by an SMTP API endpoint |
 
-The project archive intentionally behaves as a broad portfolio archive rather than a repository-verification ledger. Older entries may use the GitHub profile as a fallback when no dedicated repository URL is available, following the portfolio owner’s stated preference.
+The résumé is the source of truth for factual portfolio content. Because it supplies one GitHub profile rather than individual repository URLs, each project uses that exact profile as its only outbound action.
 
 ## Local preview
 
@@ -61,9 +61,10 @@ The Playwright suite covers every route, five target viewports, horizontal overf
 ## Design and content records
 
 - [`design-system/MASTER.md`](design-system/MASTER.md) defines the current visual and interaction system.
-- [`CONTENT_INVENTORY.md`](CONTENT_INVENTORY.md) records content decisions and project-archive boundaries.
+- [`CONTENT_INVENTORY.md`](CONTENT_INVENTORY.md) maps the current résumé facts to the portfolio.
 - [`SOURCES.md`](SOURCES.md) records supplied references, assets, and implementation sources.
-- [`resume/Kevin_Cruz_Resume.html`](resume/Kevin_Cruz_Resume.html) is the editable source for [`public/Kevin_Cruz_Resume.pdf`](public/Kevin_Cruz_Resume.pdf).
+- [`resume/KevinCruz_Resume.html`](resume/KevinCruz_Resume.html) is the editable, ATS-oriented résumé source.
+- [`public/KevinCruz_Resume.pdf`](public/KevinCruz_Resume.pdf) is the generated one-page A4 résumé downloaded by the portfolio.
 
 ## Stack
 

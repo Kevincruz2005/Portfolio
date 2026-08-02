@@ -9,8 +9,11 @@ import {
   Linkedin,
   LoaderCircle,
   LockKeyhole,
+  Mail,
+  Phone,
   Send,
 } from "lucide-react";
+import { profile } from "@/lib/data";
 
 type FormStatus = "idle" | "sending" | "success" | "error";
 type DeliveryStatus = "checking" | "ready" | "unavailable";
@@ -52,7 +55,7 @@ export function Contact() {
 
   const checkEmail = () => {
     if (deliveryStatus !== "ready") {
-      setFeedback("Email delivery is being configured. Please use GitHub or LinkedIn for now.");
+      setFeedback(`Email delivery is being configured. Contact me at ${profile.email}.`);
       return;
     }
     setEmailChecked(emailIsValid);
@@ -62,7 +65,7 @@ export function Contact() {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (deliveryStatus !== "ready") {
-      setFeedback("Email delivery is being configured. Please use GitHub or LinkedIn for now.");
+      setFeedback(`Email delivery is being configured. Contact me at ${profile.email}.`);
       return;
     }
 
@@ -116,13 +119,23 @@ export function Contact() {
           </div>
 
           <nav className="contact-fallback-links" aria-label="Alternative contact methods">
-            <a href="https://github.com/Kevincruz2005" target="_blank" rel="noreferrer">
+            <a href={`mailto:${profile.email}`}>
+              <Mail aria-hidden="true" />
+              {profile.email}
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+            <a href={`tel:${profile.phone}`}>
+              <Phone aria-hidden="true" />
+              {profile.phone}
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+            <a href={profile.github} target="_blank" rel="noreferrer">
               <Github aria-hidden="true" />
               GitHub
               <ArrowUpRight aria-hidden="true" />
             </a>
             <a
-              href="https://www.linkedin.com/in/kevin-cruz-32a8642ba/"
+              href={profile.linkedin}
               target="_blank"
               rel="noreferrer"
             >

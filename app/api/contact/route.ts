@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { profile } from "@/lib/data";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -67,7 +68,7 @@ export async function POST(request: Request) {
 
     if (!mail) {
       return NextResponse.json(
-        { error: "Email delivery is being configured. Please use GitHub or LinkedIn for now." },
+        { error: `Email delivery is being configured. Contact me at ${profile.email}.` },
         { status: 503 },
       );
     }
@@ -86,7 +87,7 @@ export async function POST(request: Request) {
     const safeMessage = escapeHtml(message).replace(/\n/g, "<br />");
 
     await transporter.sendMail({
-      from: `"Kevin Cruz Portfolio" <${mail.user}>`,
+      from: `"${profile.name} Portfolio" <${mail.user}>`,
       to: mail.recipient,
       replyTo: email,
       subject: `Portfolio message from ${safeName}`,

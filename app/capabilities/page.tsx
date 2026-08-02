@@ -3,7 +3,7 @@ import { Skills } from "@/components/skills";
 
 export const metadata: Metadata = {
   title: "Capabilities",
-  description: "Kevin Cruz's backend, systems, data, cloud, AI and blockchain capabilities.",
+  description: "Kevin Cruz T — technical skills in programming, backend, frontend, databases, cloud, automation and development tools.",
   alternates: { canonical: "/capabilities" },
 };
 

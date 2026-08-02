@@ -3,7 +3,7 @@ import { Projects } from "@/components/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Kevin Cruz's compact GitHub project archive.",
+  description: "Kevin Cruz T — six software projects from the current résumé.",
   alternates: { canonical: "/projects" },
 };
 

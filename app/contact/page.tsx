@@ -3,7 +3,7 @@ import { Contact } from "@/components/contact";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Send Kevin Cruz a direct email message from his portfolio.",
+  description: "Contact Kevin Cruz T by email, phone, LinkedIn, GitHub or the portfolio message form.",
   alternates: { canonical: "/contact" },
 };
 

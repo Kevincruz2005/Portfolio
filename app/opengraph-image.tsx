@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
+import { profile } from "@/lib/data";
 
-export const alt =
-  "Kevin Cruz, backend-focused software engineer — thoughtful systems and reliable infrastructure";
+export const alt = `${profile.name}, ${profile.role}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -84,7 +84,7 @@ export default function OpenGraphImage() {
           }}
         >
           <span style={{ display: "flex", width: 36, height: 3, background: "#76cf6a" }} />
-          Backend · systems · infrastructure
+          Software Engineer · Full-Stack
         </div>
 
         <div style={{ display: "flex", maxWidth: 810, flexDirection: "column" }}>
@@ -99,7 +99,7 @@ export default function OpenGraphImage() {
               textShadow: "0 4px 30px rgba(4,61,64,.2)",
             }}
           >
-            Thoughtful systems grow into reliable infrastructure.
+            Backend-Focused.
           </div>
         </div>
 
@@ -115,8 +115,8 @@ export default function OpenGraphImage() {
             fontWeight: 600,
           }}
         >
-          <span>KEVIN CRUZ</span>
-          <span>CHENNAI · INDIA</span>
+          <span>{profile.name.toUpperCase()}</span>
+          <span>CHENNAI · TAMIL NADU</span>
         </div>
       </div>
     </div>,

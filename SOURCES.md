@@ -39,10 +39,5 @@ It is loaded through Next Image and extended with original CSS layers. The image
 
 ## Portfolio evidence sources
 
+- Owner-supplied résumé data — sole source of truth for personal, project, education, certification and skill claims. The ATS-formatted derivative is generated from [`resume/KevinCruz_Resume.html`](resume/KevinCruz_Resume.html).
 - [Kevin’s GitHub profile](https://github.com/Kevincruz2005)
-- [LaunchProof](https://github.com/Kevincruz2005/LaunchProof)
-- [Wardens](https://github.com/Kevincruz2005/wardens)
-- [NitroGate](https://github.com/Kevincruz2005/ETHGlobal-HackMoney2026)
-- [Simple Operating System](https://github.com/Kevincruz2005/Simple-Operating-System)
-- [Image Rendering](https://github.com/Kevincruz2005/Image_Rendering)
-- [Movie Rental System](https://github.com/Kevincruz2005/Movie-Rental-System)

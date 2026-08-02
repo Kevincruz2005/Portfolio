@@ -4697,7 +4697,7 @@ body:has(.calm-hero) {
 
 .about-statement-header {
   display: flex;
-  margin-bottom: clamp(3.5rem, 8vw, 7rem);
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -4728,9 +4728,9 @@ body:has(.calm-hero) {
 
 .about-statement p:first-of-type {
   max-width: 44rem;
-  font-size: clamp(2.35rem, 4vw, 4.2rem);
+  font-size: clamp(1.9rem, 3vw, 3.2rem);
   letter-spacing: -0.055em;
-  line-height: 0.98;
+  line-height: 1.08;
 }
 
 .about-statement p:not(:first-of-type) {
@@ -4754,7 +4754,7 @@ body:has(.calm-hero) {
 
 .education-file-topline {
   display: flex;
-  margin-bottom: clamp(4rem, 8vw, 7rem);
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -4800,6 +4800,38 @@ body:has(.calm-hero) {
   color: var(--deep-teal);
 }
 
+.education-coursework {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(6, 73, 77, 0.2);
+}
+
+.education-coursework > span {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.61rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.education-coursework ul {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  list-style: none;
+}
+
+.education-coursework li {
+  padding: 0.42rem 0.62rem;
+  border: 1px solid rgba(6, 73, 77, 0.2);
+  border-radius: 999px;
+  font-size: 0.67rem;
+  font-weight: 600;
+}
+
 .journey {
   position: relative;
   overflow: hidden;
@@ -4834,6 +4866,15 @@ body:has(.calm-hero) {
   border-color: rgba(6, 73, 77, 0.22);
   background: transparent;
   color: var(--deep-teal);
+}
+
+.journey-intro > svg {
+  width: 3.4rem;
+  height: 3.4rem;
+  margin: 2rem 0 1.2rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(6, 73, 77, 0.2);
+  border-radius: 50%;
 }
 
 .journey-intro h3 {
@@ -5076,7 +5117,7 @@ body:has(.calm-hero) {
 .capability-item h3 {
   max-width: 30rem;
   color: inherit;
-  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-size: clamp(1.8rem, 2.9vw, 3.1rem);
   letter-spacing: -0.06em;
   line-height: 0.92;
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Download, Menu, X } from "lucide-react";
+import { profile } from "@/lib/data";
 
 const navigation = [
   { label: "Projects", href: "/projects" },
@@ -28,14 +29,14 @@ export function Navbar() {
   return (
     <header className="site-header">
       <div className="nav-shell">
-        <Link className="wordmark" href="/" aria-label="KC Kevin Cruz — home">
+        <Link className="wordmark" href="/" aria-label={`KC ${profile.name} — home`}>
           <span className="wordmark-mark" aria-hidden="true">KC</span>
-          <span className="wordmark-name">Kevin Cruz</span>
+          <span className="wordmark-name">{profile.name}</span>
         </Link>
 
         <a
           className="nav-resume mobile-resume"
-          href="/Kevin_Cruz_Resume.pdf"
+          href="/KevinCruz_Resume.pdf"
           download
           onClick={() => setOpen(false)}
         >
@@ -79,7 +80,7 @@ export function Navbar() {
 
           <a
             className="nav-resume"
-            href="/Kevin_Cruz_Resume.pdf"
+            href="/KevinCruz_Resume.pdf"
             download
             onClick={() => setOpen(false)}
           >

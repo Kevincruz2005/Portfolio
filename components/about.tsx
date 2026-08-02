@@ -1,7 +1,7 @@
-import { BookOpen, MapPin, Radar, University } from "lucide-react";
+import { Award, BookOpen, MapPin, Radar, University } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
-import { milestones } from "@/lib/data";
+import { certifications, education, profile, summaryParagraphs } from "@/lib/data";
 
 export function About() {
   return (
@@ -19,28 +19,16 @@ export function About() {
           id="about-heading"
           index="02"
           eyebrow="About"
-          title="Building software from the inside out."
+          title="Full-stack development with a strong backend focus."
         />
 
         <div className="about-layout">
           <Reveal className="about-statement">
             <div className="about-statement-header">
               <Radar aria-hidden="true" />
-              <span>Operating principle</span>
+              <span>Executive summary</span>
             </div>
-            <p>
-              My work keeps moving toward the same question: <strong>what has to
-              remain true when the easy path fails?</strong>
-            </p>
-            <p>
-              That question led from Java and relational applications into memory
-              allocation, paging and interrupts—then into agent payments, bounded
-              execution, chain-backed evidence and cloud delivery.
-            </p>
-            <p>
-              I prefer systems with explicit boundaries, observable failure modes
-              and claims that another engineer can verify.
-            </p>
+            {summaryParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </Reveal>
 
           <Reveal className="education-file" delay={0.08}>
@@ -48,40 +36,50 @@ export function About() {
               <div className="education-file-label">Education</div>
               <University aria-hidden="true" />
             </div>
-            <h3>B.E. Computer Science and Engineering</h3>
-            <p>Loyola-ICAM College of Engineering and Technology</p>
+            <h3>{education.degree}</h3>
+            <p>{education.institution}</p>
             <dl>
               <div>
                 <dt>Period</dt>
-                <dd>2023–2027</dd>
+                <dd>{education.period}</dd>
+              </div>
+              <div>
+                <dt>CGPA</dt>
+                <dd>{education.cgpa}</dd>
               </div>
               <div>
                 <dt>Location</dt>
-                <dd><MapPin aria-hidden="true" /> Chennai, India</dd>
+                <dd><MapPin aria-hidden="true" /> {profile.location}</dd>
               </div>
               <div>
-                <dt>Current direction</dt>
-                <dd><BookOpen aria-hidden="true" /> Backend, systems and reliable infrastructure</dd>
+                <dt>Status</dt>
+                <dd><BookOpen aria-hidden="true" /> {education.status}</dd>
               </div>
             </dl>
+            <div className="education-coursework">
+              <span>Relevant coursework</span>
+              <ul>
+                {education.coursework.map((course) => <li key={course}>{course}</li>)}
+              </ul>
+            </div>
           </Reveal>
         </div>
 
-        <div className="journey" aria-labelledby="journey-heading">
+        <div className="journey" aria-labelledby="certifications-heading">
           <div className="journey-intro">
-            <p className="eyebrow">Engineering journey</p>
-            <h3 id="journey-heading">How my focus changed over time.</h3>
+            <p className="eyebrow">Certifications</p>
+            <Award aria-hidden="true" />
+            <h3 id="certifications-heading">Training and credentials.</h3>
           </div>
           <ol>
-            {milestones.map((milestone, index) => (
-              <li key={milestone.label}>
+            {certifications.map((certification, index) => (
+              <li key={certification}>
                 <span className="journey-marker" aria-hidden="true">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <span className="journey-label">{milestone.label}</span>
-                  <h4>{milestone.title}</h4>
-                  <p>{milestone.copy}</p>
+                  <span className="journey-label">Certification</span>
+                  <h4>{certification}</h4>
                 </div>
               </li>
             ))}

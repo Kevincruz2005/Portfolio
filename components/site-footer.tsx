@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { profile } from "@/lib/data";
 
 export function SiteFooter() {
   const pathname = usePathname();
@@ -11,8 +12,8 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="page-shell">
-        <span>© 2026 Kevin Cruz</span>
-        <span>Backend, systems and reliable infrastructure.</span>
+        <span>© 2026 {profile.name}</span>
+        <span>{profile.role}</span>
         <Link href="/">Return home</Link>
       </div>
     </footer>

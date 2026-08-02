@@ -4,6 +4,7 @@ import { MotionProvider } from "@/components/motion-provider";
 import { Navbar } from "@/components/navbar";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { SiteFooter } from "@/components/site-footer";
+import { education, profile } from "@/lib/data";
 import "./globals.css";
 
 const body = DM_Sans({
@@ -18,44 +19,45 @@ const canonicalUrl = "https://kevin-portfolio-taupe.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(canonicalUrl),
   title: {
-    default: "Kevin Cruz — Backend-Focused Software Engineer",
-    template: "%s — Kevin Cruz",
+    default: `${profile.name} — Software Engineer | Full-Stack (Backend-Focused)`,
+    template: `%s — ${profile.name}`,
   },
-  description:
-    "Kevin Cruz builds backend, systems and verifiable digital infrastructure—from operating-system internals to agent payments and chain-backed service evidence.",
-  applicationName: "Kevin Cruz Portfolio",
-  authors: [{ name: "Kevin Cruz", url: "https://github.com/Kevincruz2005" }],
-  creator: "Kevin Cruz",
+  description: profile.summary,
+  applicationName: `${profile.name} Portfolio`,
+  authors: [{ name: profile.name, url: profile.github }],
+  creator: profile.name,
   keywords: [
-    "Kevin Cruz",
-    "backend software engineer",
-    "systems programming",
-    "agent infrastructure",
-    "blockchain engineer",
-    "Chennai software engineer",
-    "Next.js portfolio",
+    profile.name,
+    "Software Engineer",
+    "Full-Stack Developer",
+    "Backend Developer",
+    "Java",
+    "SQL",
+    "PostgreSQL",
+    "Docker",
+    "React.js",
+    "Chennai",
   ],
   alternates: { canonical: canonicalUrl },
   openGraph: {
     type: "profile",
     url: canonicalUrl,
-    title: "Kevin Cruz — Thoughtful systems, reliable infrastructure",
-    description:
-      "Backend architecture, systems programming, automation and verifiable digital infrastructure.",
-    siteName: "Kevin Cruz Portfolio",
+    title: `${profile.name} — ${profile.role}`,
+    description: profile.summary,
+    siteName: `${profile.name} Portfolio`,
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Kevin Cruz, backend-focused software engineer — thoughtful systems and reliable infrastructure",
+        alt: `${profile.name}, ${profile.role}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kevin Cruz — Backend-Focused Software Engineer",
-    description: "Thoughtful systems that grow into reliable infrastructure.",
+    title: `${profile.name} — ${profile.role}`,
+    description: profile.summary,
     images: ["/opengraph-image"],
   },
   icons: {
@@ -73,19 +75,18 @@ export const viewport: Viewport = {
 const personStructuredData = {
   "@context": "https://schema.org",
   "@type": "Person",
-  name: "Kevin Cruz",
+  name: profile.name,
   url: canonicalUrl,
   image: `${canonicalUrl}/opengraph-image`,
-  jobTitle: "Backend-Focused Software Engineer",
-  homeLocation: { "@type": "Place", name: "Chennai, India" },
-  alumniOf: {
-    "@type": "CollegeOrUniversity",
-    name: "Loyola-ICAM College of Engineering and Technology",
+  jobTitle: profile.role,
+  email: profile.email,
+  telephone: profile.phone,
+  homeLocation: { "@type": "Place", name: profile.location },
+  affiliation: {
+    "@type": "EducationalOrganization",
+    name: education.institution,
   },
-  sameAs: [
-    "https://github.com/Kevincruz2005",
-    "https://www.linkedin.com/in/kevin-cruz-32a8642ba/",
-  ],
+  sameAs: [profile.github, profile.linkedin],
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

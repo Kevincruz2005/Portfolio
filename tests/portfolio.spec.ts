@@ -2,10 +2,10 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const routes = [
-  { path: "/", heading: "Thoughtful systems grow into reliable infrastructure." },
-  { path: "/projects", heading: "Projects and experiments." },
-  { path: "/about", heading: "Building software from the inside out." },
-  { path: "/capabilities", heading: "What I use to build." },
+  { path: "/", heading: "Software Engineer. Full-Stack. Backend-Focused." },
+  { path: "/projects", heading: "Projects." },
+  { path: "/about", heading: "Full-stack development with a strong backend focus." },
+  { path: "/capabilities", heading: "Technical skills." },
   { path: "/contact", heading: "Send a direct message." },
 ];
 
@@ -44,12 +44,41 @@ for (const viewport of viewports) {
 
 test("project archive uses compact cards with GitHub as the only outbound action", async ({ page }) => {
   await page.goto("/projects");
-  await expect(page.locator(".project-archive-card")).toHaveCount(11);
+  await expect(page.locator(".project-archive-card")).toHaveCount(6);
   const links = page.locator(".project-archive-card > footer a");
-  await expect(links).toHaveCount(11);
+  await expect(links).toHaveCount(6);
   for (let index = 0; index < (await links.count()); index += 1) {
     await expect(links.nth(index)).toHaveAttribute("href", /^https:\/\/github\.com\//);
   }
+});
+
+test("portfolio content matches the current résumé", async ({ page }) => {
+  await page.goto("/projects");
+  for (const title of [
+    "Automated Video Rendering Pipeline",
+    "NitroGate",
+    "Custom Heap Memory Allocator in C",
+    "Electronics Rental System",
+    "Fake News Detector Browser Extension",
+    "Movie Rental System",
+  ]) {
+    await expect(page.getByRole("heading", { name: title, exact: true })).toBeAttached();
+  }
+
+  await page.goto("/about");
+  await expect(page.getByText("Bachelor in Computer Science and Engineering", { exact: true })).toBeVisible();
+  await expect(page.getByText("7.68", { exact: true })).toBeVisible();
+  await expect(page.getByText("Currently Pursuing 6th Semester", { exact: true })).toBeVisible();
+
+  await page.goto("/contact");
+  await expect(page.getByRole("link", { name: /kevintom2024@gmail\.com/ })).toHaveAttribute(
+    "href",
+    "mailto:kevintom2024@gmail.com",
+  );
+  await expect(page.getByRole("link", { name: /8072716200/ })).toHaveAttribute(
+    "href",
+    "tel:8072716200",
+  );
 });
 
 test("mobile navigation is keyboard dismissible and routes between pages", async ({ page }) => {
@@ -76,7 +105,7 @@ test("skip link receives first keyboard focus", async ({ page }) => {
 });
 
 test("résumé is a real PDF", async ({ request }) => {
-  const response = await request.get("/Kevin_Cruz_Resume.pdf");
+  const response = await request.get("/KevinCruz_Resume.pdf");
   expect(response.ok()).toBeTruthy();
   expect(response.headers()["content-type"]).toContain("application/pdf");
   const body = await response.body();
@@ -186,7 +215,7 @@ test("project archive provides a static readable grid for reduced motion", async
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/projects");
 
-  await expect(page.locator(".project-stack-card")).toHaveCount(11);
+  await expect(page.locator(".project-stack-card")).toHaveCount(6);
   await expect(page.locator(".project-stack-card").last()).toBeVisible();
   await expect(page.locator(".project-scroll-stage")).toHaveCSS("position", "relative");
 });
@@ -215,6 +244,6 @@ test("core project content remains available without JavaScript", async ({ brows
   const page = await context.newPage();
   await page.goto("http://localhost:3000/projects");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.locator(".project-archive-card")).toHaveCount(11);
+  await expect(page.locator(".project-archive-card")).toHaveCount(6);
   await context.close();
 });

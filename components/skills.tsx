@@ -32,8 +32,8 @@ export function Skills() {
           id="capabilities-heading"
           index="03"
           eyebrow="Capabilities"
-          title="What I use to build."
-          description="Languages, infrastructure and tooling grouped by the work they help me deliver."
+          title="Technical skills."
+          description="Programming languages, frameworks, databases, cloud tools and development workflow."
         />
 
         <div className="capability-grid">
@@ -50,7 +50,6 @@ export function Skills() {
                   <Icon aria-hidden="true" />
                 </div>
                 <h3>{capability.title}</h3>
-                <p>{capability.description}</p>
                 <ul aria-label={`${capability.title} technologies`}>
                   {capability.items.map((item) => (
                     <li key={item}>{item}</li>

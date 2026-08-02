@@ -113,8 +113,8 @@ export function Projects() {
     >
       <div ref={stageRef} className="project-scroll-stage">
         <div className="project-story-intro">
-          <p>Selected build archive</p>
-          <h1 id="projects-heading">Projects and experiments.</h1>
+          <p>Résumé project archive</p>
+          <h1 id="projects-heading">Projects.</h1>
           <span>Scroll to move through the stack</span>
         </div>
 
@@ -154,7 +154,7 @@ export function Projects() {
                     href={project.github}
                     target="_blank"
                     rel="noreferrer"
-                    aria-label={`GitHub source for ${project.title} — opens in a new tab`}
+                    aria-label={`GitHub profile for ${project.title} — opens in a new tab`}
                   >
                     <Github aria-hidden="true" />
                     GitHub

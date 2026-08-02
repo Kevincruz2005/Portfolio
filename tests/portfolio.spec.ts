@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const routes = [
-  { path: "/", heading: "Software Engineer. Full-Stack. Backend-Focused." },
+  { path: "/", heading: "Thoughtful systems grow into reliable infrastructure." },
   { path: "/projects", heading: "Projects." },
   { path: "/about", heading: "Full-stack development with a strong backend focus." },
   { path: "/capabilities", heading: "Technical skills." },

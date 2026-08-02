@@ -147,18 +147,21 @@ export function CalmLandscapeHero() {
       <div className="calm-hero-content">
         <p className="calm-hero-eyebrow">
           <span aria-hidden="true" />
-          Java · SQL · modern web technologies
+          Backend · systems · infrastructure
         </p>
 
         <h1 id="calm-hero-title">
-          <span>Software Engineer.</span>
+          <span>Thoughtful systems</span>
           {" "}
-          <span>Full-Stack.</span>
+          <span>grow into reliable</span>
           {" "}
-          <span>Backend-Focused.</span>
+          <span>infrastructure.</span>
         </h1>
 
-        <p className="calm-hero-description">{profile.summary}</p>
+        <p className="calm-hero-description">
+          I build backend, systems and agent infrastructure with clear boundaries,
+          observable failures and evidence another engineer can verify.
+        </p>
 
         <div className="calm-hero-actions" aria-label="Portfolio actions">
           <Link className="calm-button calm-button-coral" href="/projects">
@@ -183,12 +186,12 @@ export function CalmLandscapeHero() {
             </svg>
           </span>
           <span>
-            <strong>{profile.name}</strong>
-            <small>{profile.location}</small>
+            <strong>Kevin Cruz</strong>
+            <small>Chennai, India</small>
           </span>
         </div>
 
-        <p>{profile.role}</p>
+        <p>Backend, systems and reliable infrastructure.</p>
 
         <nav className="calm-home-links" aria-label="Social links">
           <a href={profile.github} target="_blank" rel="noreferrer">
@@ -213,32 +216,32 @@ export function CalmLandscapeHero() {
 
       <section className="calm-home-continuation" aria-labelledby="calm-continuation-title">
         <div className="calm-continuation-shell">
-          <p className="calm-continuation-kicker">Technical profile</p>
+          <p className="calm-continuation-kicker">Built from the inside out</p>
           <div className="calm-continuation-heading">
             <h2 id="calm-continuation-title">
-              Full-stack development with a strong backend focus.
+              From low-level memory to reliable agent infrastructure.
             </h2>
             <p>
-              Hands-on experience in database-driven application using modern web
-              technologies and clean software design principles.
+              I work across the layers where software has to be understandable,
+              observable and useful to the next engineer who touches it.
             </p>
           </div>
 
           <div className="calm-continuation-grid">
             <article>
               <span>01</span>
-              <h3>Backend Frameworks & Libraries</h3>
-              <p>Node.js, Express, Spring Boot and REST APIs.</p>
+              <h3>Clear boundaries</h3>
+              <p>Typed interfaces, explicit state and failure paths that stay visible.</p>
             </article>
             <article>
               <span>02</span>
-              <h3>Databases</h3>
-              <p>PostgreSQL and MySQL.</p>
+              <h3>Systems thinking</h3>
+              <p>From allocation and rendering to data, APIs and distributed trust.</p>
             </article>
             <article>
               <span>03</span>
-              <h3>Cloud & DevOps</h3>
-              <p>Linux, AWS and Docker.</p>
+              <h3>Verifiable outcomes</h3>
+              <p>Evidence another engineer can inspect instead of claims they must trust.</p>
             </article>
           </div>
 

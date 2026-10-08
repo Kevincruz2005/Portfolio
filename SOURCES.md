@@ -39,5 +39,25 @@ It is loaded through Next Image and extended with original CSS layers. The image
 
 ## Portfolio evidence sources
 
-- Owner-supplied résumé data — sole source of truth for personal, project, education, certification and skill claims. The ATS-formatted derivative is generated from [`resume/KevinCruz_Resume.html`](resume/KevinCruz_Resume.html).
+- Owner-supplied résumé data — source of truth for the original personal, project, education, certification and skill claims. Precedence's additional sources are recorded below. The ATS-formatted derivative is generated from [`resume/KevinCruz_Resume.html`](resume/KevinCruz_Resume.html).
 - [Kevin’s GitHub profile](https://github.com/Kevincruz2005)
+
+## Precedence — added 2026-10-08
+
+Source snapshot: [ChaseBP/precedence at `119c822`](https://github.com/ChaseBP/precedence/tree/119c822a28d5b4a856bac8689d18ba33238dec7e). The repository was inspected locally before adding portfolio content.
+
+| Portfolio claim / finding | Evidence |
+| --- | --- |
+| Cross-chain lending and lender priority over shared collateral | [Root README, sections 1 and 4](https://github.com/ChaseBP/precedence/blob/119c822a28d5b4a856bac8689d18ba33238dec7e/README.md): source-chain capital locks are ordered by verified `(blockHeight, txIndex)` on Creditcoin. |
+| Ethereum Sepolia and Creditcoin | README deployment records and `contracts/deployments/`; these are testnets, not a claim of mainnet operation. |
+| Solidity / Foundry | `contracts/foundry.toml`; `contracts/src/sepolia/PriorityVault.sol`; `contracts/src/creditcoin/AttestationGate.sol`. |
+| TypeScript / Next.js | `precedence/package.json`, application routes and `precedence/sdk/src/`. |
+| Attestcoin proof integration | `worker/src/proof.ts` and `worker/src/settle-race.ts`; `AttestationGate.sol` calls `verifyAndEmit` and derives the source transaction index from the proof. |
+| Architecture | Sepolia capital-lock vault → separate TypeScript proof worker → Creditcoin verification and priority contracts. Next.js command centre and TypeScript SDK provide application routes and shared settlement rules. The inspected app configuration proxies API requests from Vercel to a separate backend. |
+| Major implemented features | Proof-ordered lender priority, ERC-1155 claim positions, automatic refunds for outpaced bids, seniority-based repayments, and a deterministic default/unwind path. See `ClaimToken.sol`, `PriorityEngine.sol`, `PriorityVault.sol`, SDK domain modules and README. The card uses only a concise description rather than reproducing every feature. |
+| Repository URL | `https://github.com/ChaseBP/precedence`, supplied by Kevin and successfully inspected. |
+| Published app | `https://precedence-beige.vercel.app`, linked by the root README. Read-only check on 2026-10-08 returned HTTP 200 with the PRECEDENCE page title. Its `/api/config` endpoint returned HTTP 502; link label is “View app”, without a claim that the backend or all interactive flows are currently operational. |
+| Recognition | Kevin supplied **3rd Place — BUIDL CTC 2026 Fall** and **$2,000**. These are attributed to the project; no personal share of the prize is claimed. |
+| Individual contributions | The inspected 183-commit history credits ChaseBP, and the project README refers to a team without a contribution breakdown. Kevin's association is established by his request; specific individual implementation work and team size are omitted. |
+
+No performance, test-count, production-readiness, mainnet, legal-enforceability, or personal-authorship metrics are added to the portfolio. The existing résumé downloads are unchanged. At Kevin's subsequent request, the GitHub and “View app” buttons were removed from Precedence's card; the URLs above remain research evidence only.

@@ -3,6 +3,7 @@
 import { useEffect, useRef, type CSSProperties } from "react";
 import { ArrowUpRight, Github } from "lucide-react";
 import { profile, projects } from "@/lib/data";
+import { ProjectRecognition } from "@/components/project-evidence";
 
 const cardColours = ["#f6f1dd", "#c7e99d", "#ffb3a4", "#d9e8d4"];
 
@@ -116,7 +117,7 @@ export function Projects() {
     >
       <div ref={stageRef} className="project-scroll-stage">
         <header className="project-story-intro">
-          <p>Résumé project archive</p>
+          <p>Selected project archive</p>
           <h1 id="projects-heading">Projects.</h1>
           <span>Scroll to move through the stack</span>
           <a href={profile.github} target="_blank" rel="noreferrer">
@@ -135,13 +136,14 @@ export function Projects() {
         <div className="project-card-stack">
           {projects.map((project, index) => (
             <article
-              className="project-stack-card project-archive-card"
+              className={`project-stack-card project-archive-card${project.recognition ? " has-recognition" : ""}`}
               key={project.title}
               style={{ backgroundColor: cardColours[index % cardColours.length] }}
             >
               <header className="project-stack-heading">
                 <p>Project / {String(index + 1).padStart(2, "0")}</p>
                 <h2>{project.title}</h2>
+                <ProjectRecognition project={project} />
                 <p>{project.description}</p>
               </header>
 

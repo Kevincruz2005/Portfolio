@@ -4,7 +4,7 @@
 
 A calm environmental engineering portfolio. The visual language combines warm illustrated landscape tones with deep teal product surfaces, concise recruiter-readable copy, and an editorial project archive. The result should feel crafted and memorable without obscuring project evidence or navigation.
 
-The homepage begins with a sticky landscape stage and continues into recruiter evidence: a quick-view summary, three featured résumé projects, capabilities, and contact paths. The project route is a scroll-driven stack of paper-like cards with a static reduced-motion fallback. Supporting pages remain quieter and use the same palette, pill navigation, typography, and action geometry.
+The homepage is restored from pre-chat commit `c3a1533`: a sticky landscape stage followed by the original three-part systems continuation. Its historical styles are isolated in `app/homepage.css` so supporting pages are not rolled back. The project route remains a scroll-driven stack of paper-like cards with a static reduced-motion fallback. Shared navigation retains one top-right résumé action.
 
 ## Foundations
 
@@ -44,7 +44,7 @@ Cream and pale-green text meet AA contrast on teal. Small card metadata uses sol
 
 1. Fixed capsule navigation and résumé access.
 2. Landscape, role, value proposition, and primary actions.
-3. Three featured projects and a capability summary on the homepage.
+3. Original systems continuation on the homepage, linking to the project archive.
 4. Projects as a scroll-driven archive with one clearly labelled GitHub profile action.
 5. About, capabilities, and direct email contact on separate endpoints.
 
@@ -53,18 +53,20 @@ Cream and pale-green text meet AA contrast on teal. Small card metadata uses sol
 ### Landscape stage
 
 - The stage sticks for the first desktop scroll chapter while the parent section provides the scroll distance.
-- The source landscape begins below the navigation so its figure is never covered.
+- The source landscape and its overlay retain their original pre-chat placement.
 - CSS hills, mist, leaves, birds, and pointer depth extend the artwork.
 - Scroll progress moves layers at different rates and gently reduces foreground-copy prominence.
 - Mobile uses an extended natural-flow composition to protect content and footer spacing.
 
 ### Project archive
 
-- Six semantic `article` elements represent the projects in the current résumé.
+- Seven semantic `article` elements represent Precedence followed by the six résumé projects.
 - A sticky viewport stage moves through the cards with scroll-linked translation, rotation, scale, and opacity.
 - Reduced-motion users receive a two-column static grid that becomes one column on mobile.
 - Each card contains its title, description, technologies, and a large index.
+- Precedence leads the animated archive. Its award uses a coral trophy badge, event label, and prize amount within the existing cream card, with no new palette or section. It does not change the restored homepage.
 - The archive header links to the GitHub profile once; cards do not imply unverified repository-level URLs.
+- All cards, including Precedence, use the same technology-list and large-index footer without project-level buttons, at the owner's request.
 - Oversized background type gives the route an editorial signature without affecting reading order.
 
 ### Buttons and navigation
@@ -101,7 +103,7 @@ Cream and pale-green text meet AA contrast on teal. Small card metadata uses sol
 ## Boundaries
 
 - No fake metrics, employment, clients, awards, proficiency percentages, or deliverability claims.
-- No project diagrams, live-demo buttons, or hidden proof panels.
+- No invented diagrams, demo URLs, or hidden proof panels. Project-level links require repository or owner evidence.
 - No copyrighted franchise assets or branding.
 - No WebGL, particle engine, autoplay media, or scroll hijacking.
 - The background image is the owner-supplied landscape recorded in `SOURCES.md`.

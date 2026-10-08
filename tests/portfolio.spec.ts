@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const routes = [
-  { path: "/", heading: "Software Engineer. Full-stack, backend-focused." },
+  { path: "/", heading: "Thoughtful systems grow into reliable infrastructure." },
   { path: "/projects", heading: "Projects." },
   { path: "/about", heading: "Full-stack development with a strong backend focus." },
   { path: "/capabilities", heading: "Technical skills." },
@@ -43,11 +43,32 @@ for (const viewport of viewports) {
       expect(dimensions.scrollWidth, route.path).toBeLessThanOrEqual(dimensions.clientWidth + 1);
     }
   });
+
+  test(`Precedence evidence fits its scrolling card at ${viewport.name}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto("/projects");
+    const card = page.locator(".project-archive-card").first();
+    const fits = await card.evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      return Array.from(element.querySelectorAll("h2, .project-recognition, footer")).every((child) => {
+        const rect = child.getBoundingClientRect();
+        return rect.top >= bounds.top && rect.bottom <= bounds.bottom;
+      }) && element.scrollHeight <= element.clientHeight + 1;
+    });
+    expect(fits).toBe(true);
+    await expect(card.getByRole("link")).toHaveCount(0);
+    await expect(card.locator("footer")).toHaveCSS("display", "flex");
+  });
 }
 
 test("project archive uses truthful project actions", async ({ page }) => {
   await page.goto("/projects");
-  await expect(page.locator(".project-archive-card")).toHaveCount(6);
+  await expect(page.locator(".project-archive-card")).toHaveCount(7);
+  const precedence = page.locator(".project-archive-card").first();
+  await expect(precedence.getByRole("heading", { name: "Precedence", exact: true })).toBeVisible();
+  await expect(precedence.getByText("3rd Place", { exact: true })).toBeVisible();
+  await expect(precedence.getByText("BUIDL CTC 2026 Fall", { exact: true })).toBeVisible();
+  await expect(precedence.getByText("$2,000", { exact: true })).toBeVisible();
   await expect(page.locator(".project-archive-card a")).toHaveCount(0);
   await expect(page.getByRole("link", { name: /GitHub profile/ })).toHaveAttribute(
     "href",
@@ -56,9 +77,18 @@ test("project archive uses truthful project actions", async ({ page }) => {
   await expect(page.locator('a[href="/KevinCruz_Resume.pdf"]')).toHaveCount(1);
 });
 
-test("portfolio content matches the current résumé", async ({ page }) => {
+test("Precedence leaves the archive navigation usable on short phones", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto("/projects");
+  await page.getByRole("link", { name: /GitHub profile/ }).click({ trial: true });
+  const card = page.locator(".project-archive-card").first();
+  await expect(card.getByRole("link")).toHaveCount(0);
+});
+
+test("portfolio content preserves the résumé projects and verified addition", async ({ page }) => {
   await page.goto("/projects");
   for (const title of [
+    "Precedence",
     "Automated Video Rendering Pipeline",
     "NitroGate",
     "Custom Heap Memory Allocator in C",
@@ -200,11 +230,14 @@ test("home remains readable with reduced motion", async ({ page }) => {
   await expect(page.locator(".calm-birds")).toHaveCSS("display", "none");
 });
 
-test("home surfaces the recruiter summary and three featured projects", async ({ page }) => {
+test("home restores the pre-chat introduction and continuation", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByLabel("Recruiter quick view")).toBeVisible();
-  await expect(page.locator(".home-project-card")).toHaveCount(3);
-  await expect(page.getByText("Software Engineer / Full-Stack Internship", { exact: true })).toBeVisible();
+  await expect(page.locator(".calm-continuation-grid article")).toHaveCount(3);
+  for (const name of ["Clear boundaries", "Systems thinking", "Verifiable outcomes"]) {
+    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  }
+  await expect(page.getByRole("link", { name: "Enter the project archive" })).toHaveAttribute("href", "/projects");
+  await expect(page.locator(".home-evidence, .home-project-card, .calm-hero-skills")).toHaveCount(0);
 });
 
 test("home uses a viewport stage inside an extended scroll story and loads its landscape", async ({ page }) => {
@@ -253,13 +286,14 @@ test("project archive restores the scroll-driven card stack", async ({ page }) =
 
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight * 0.55));
   await expect(page.locator(".project-scroll-index span").first()).not.toHaveText("01");
+  await expect(page.locator(".project-archive-card a")).toHaveCount(0);
 });
 
 test("project archive provides a static readable grid for reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/projects");
 
-  await expect(page.locator(".project-stack-card")).toHaveCount(6);
+  await expect(page.locator(".project-stack-card")).toHaveCount(7);
   await expect(page.locator(".project-stack-card").last()).toBeVisible();
   await expect(page.locator(".project-card-stack")).toHaveCSS("display", "grid");
   await expect(page.locator(".project-scroll-stage")).toHaveCSS("position", "relative");
@@ -289,6 +323,6 @@ test("core project content remains available without JavaScript", async ({ brows
   const page = await context.newPage();
   await page.goto("http://localhost:3000/projects");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.locator(".project-archive-card")).toHaveCount(6);
+  await expect(page.locator(".project-archive-card")).toHaveCount(7);
   await context.close();
 });

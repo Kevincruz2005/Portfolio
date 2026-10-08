@@ -3,6 +3,11 @@ export type ArchivedProject = {
   description: string;
   tags: string[];
   github: string;
+  recognition?: {
+    placement: string;
+    event: string;
+    prize: string;
+  };
 };
 
 export const profile = {
@@ -25,6 +30,18 @@ export const summaryParagraphs = [
 ] as const;
 
 export const projects: ArchivedProject[] = [
+  {
+    title: "Precedence",
+    description:
+      "Cross-chain lending protocol that verifies transaction order on Ethereum Sepolia and Creditcoin to establish lender priority over shared collateral.",
+    tags: ["Solidity", "TypeScript", "Next.js", "Attestcoin", "Foundry"],
+    github: "https://github.com/ChaseBP/precedence",
+    recognition: {
+      placement: "3rd Place",
+      event: "BUIDL CTC 2026 Fall",
+      prize: "$2,000",
+    },
+  },
   {
     title: "Automated Video Rendering Pipeline",
     description:

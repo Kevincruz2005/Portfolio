@@ -1,6 +1,6 @@
 # Kevin Cruz T — Software Engineering Portfolio
 
-A multi-page portfolio for Kevin Cruz T built around the exact content of the current résumé, a calm environmental art direction, an evidence-led homepage, and a scroll-driven editorial project archive.
+A multi-page portfolio for Kevin Cruz T with a calm environmental homepage and a scroll-driven editorial project archive. The homepage component and its styles are restored from the pre-chat GitHub baseline `c3a1533`; supporting-page upgrades remain intact.
 
 ![Portfolio home page](docs/screenshots/after-desktop.png)
 
@@ -8,13 +8,13 @@ A multi-page portfolio for Kevin Cruz T built around the exact content of the cu
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Landscape introduction, recruiter snapshot, featured work, and capability summary |
-| `/projects` | Scroll-driven stack of the six résumé projects with one accurately labelled profile action |
+| `/` | Original landscape introduction and three-part systems continuation |
+| `/projects` | Scroll-driven stack of seven projects, led by award-winning Precedence |
 | `/about` | Executive summary, education, coursework and certifications |
 | `/capabilities` | The seven technical-skill groups from the résumé |
 | `/contact` | Email contact form backed by an SMTP API endpoint |
 
-The résumé is the source of truth for factual portfolio content. Because it supplies one GitHub profile rather than individual repository URLs, the archive labels one profile-level action and does not imply project-specific source links.
+The résumé is the source of truth for the original six projects. Precedence's description and technologies are verified from its public repository; its third-place finish at BUIDL CTC 2026 Fall and $2,000 prize were supplied by Kevin. Precedence leads the project archive. All cards use the same technology-list and index footer without project-level links, at Kevin's request; the archive retains its shared GitHub profile action.
 
 ## Local preview
 

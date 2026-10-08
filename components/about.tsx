@@ -1,5 +1,4 @@
 import { Award, BookOpen, MapPin, Radar, University } from "lucide-react";
-import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { certifications, education, profile, summaryParagraphs } from "@/lib/data";
 
@@ -23,20 +22,20 @@ export function About() {
         />
 
         <div className="about-layout">
-          <Reveal className="about-statement">
+          <article className="about-statement">
             <div className="about-statement-header">
               <Radar aria-hidden="true" />
               <span>Executive summary</span>
             </div>
             {summaryParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-          </Reveal>
+          </article>
 
-          <Reveal className="education-file" delay={0.08}>
+          <article className="education-file">
             <div className="education-file-topline">
               <div className="education-file-label">Education</div>
               <University aria-hidden="true" />
             </div>
-            <h3>{education.degree}</h3>
+            <h2>{education.degree}</h2>
             <p>{education.institution}</p>
             <dl>
               <div>
@@ -62,14 +61,14 @@ export function About() {
                 {education.coursework.map((course) => <li key={course}>{course}</li>)}
               </ul>
             </div>
-          </Reveal>
+          </article>
         </div>
 
         <div className="journey" aria-labelledby="certifications-heading">
           <div className="journey-intro">
             <p className="eyebrow">Certifications</p>
             <Award aria-hidden="true" />
-            <h3 id="certifications-heading">Training and credentials.</h3>
+            <h2 id="certifications-heading">Training and credentials.</h2>
           </div>
           <ol>
             {certifications.map((certification, index) => (
@@ -79,7 +78,7 @@ export function About() {
                 </span>
                 <div>
                   <span className="journey-label">Certification</span>
-                  <h4>{certification}</h4>
+                  <h3>{certification}</h3>
                 </div>
               </li>
             ))}

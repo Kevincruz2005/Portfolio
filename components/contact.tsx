@@ -5,6 +5,7 @@ import {
   AlertCircle,
   ArrowUpRight,
   CheckCircle2,
+  Copy,
   Github,
   Linkedin,
   LoaderCircle,
@@ -17,6 +18,7 @@ import { profile } from "@/lib/data";
 
 type FormStatus = "idle" | "sending" | "success" | "error";
 type DeliveryStatus = "checking" | "ready" | "unavailable";
+type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
 
 const initialForm = {
   name: "",
@@ -31,6 +33,8 @@ export function Contact() {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [deliveryStatus, setDeliveryStatus] = useState<DeliveryStatus>("checking");
   const [feedback, setFeedback] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [emailCopied, setEmailCopied] = useState(false);
 
   const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
 
@@ -59,7 +63,21 @@ export function Contact() {
       return;
     }
     setEmailChecked(emailIsValid);
-    setFeedback(emailIsValid ? "Looks good. You can write your message now." : "Enter a valid email address first.");
+    setFieldErrors((current) => ({
+      ...current,
+      email: emailIsValid ? undefined : "Enter a valid reply email.",
+    }));
+    setFeedback(emailIsValid ? "Email format checked. You can write your message now." : "Enter a valid email address first.");
+  };
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email);
+      setEmailCopied(true);
+      window.setTimeout(() => setEmailCopied(false), 2000);
+    } catch {
+      setFeedback(`Copy did not complete. Email me at ${profile.email}.`);
+    }
   };
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
@@ -69,11 +87,25 @@ export function Contact() {
       return;
     }
 
+    const errors: FieldErrors = {};
+    if (!form.name.trim() || form.name.trim().length < 2) {
+      errors.name = "Enter your name using at least 2 characters.";
+    }
     if (!emailChecked || !emailIsValid) {
-      setFeedback("Check your email address before sending.");
+      errors.email = "Check a valid reply email before sending.";
+    }
+    if (!form.message.trim() || form.message.trim().length < 10) {
+      errors.message = "Write a message using at least 10 characters.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setStatus("error");
+      setFeedback("Review the highlighted fields and try again.");
       return;
     }
 
+    setFieldErrors({});
     setStatus("sending");
     setFeedback("Sending your message…");
 
@@ -93,6 +125,7 @@ export function Contact() {
       setFeedback("Message sent. I’ll get back to you through the email address provided.");
       setForm(initialForm);
       setEmailChecked(false);
+      setFieldErrors({});
     } catch (error) {
       setStatus("error");
       setFeedback(error instanceof Error ? error.message : "The message could not be sent.");
@@ -124,6 +157,10 @@ export function Contact() {
               {profile.email}
               <ArrowUpRight aria-hidden="true" />
             </a>
+            <button className="copy-email-button" type="button" onClick={copyEmail}>
+              {emailCopied ? <CheckCircle2 aria-hidden="true" /> : <Copy aria-hidden="true" />}
+              {emailCopied ? "Email copied" : "Copy email"}
+            </button>
             <a href={`tel:${profile.phone}`}>
               <Phone aria-hidden="true" />
               {profile.phone}
@@ -185,10 +222,16 @@ export function Contact() {
               maxLength={100}
               required
               value={form.name}
-              onChange={(event) => setForm({ ...form, name: event.target.value })}
+              onChange={(event) => {
+                setForm({ ...form, name: event.target.value });
+                setFieldErrors((current) => ({ ...current, name: undefined }));
+              }}
               disabled={status === "sending"}
               placeholder="Your name"
+              aria-invalid={Boolean(fieldErrors.name)}
+              aria-describedby={fieldErrors.name ? "contact-name-error" : undefined}
             />
+            {fieldErrors.name ? <small id="contact-name-error" className="field-error">{fieldErrors.name}</small> : null}
           </label>
 
           <div className="contact-field">
@@ -205,10 +248,12 @@ export function Contact() {
                 onChange={(event) => {
                   setForm({ ...form, email: event.target.value });
                   setEmailChecked(false);
+                  setFieldErrors((current) => ({ ...current, email: undefined }));
                 }}
                 disabled={status === "sending"}
                 placeholder="you@example.com"
-                aria-describedby="contact-feedback"
+                aria-invalid={Boolean(fieldErrors.email)}
+                aria-describedby={fieldErrors.email ? "contact-email-error contact-feedback" : "contact-feedback"}
               />
               <button
                 type="button"
@@ -217,9 +262,10 @@ export function Contact() {
                 disabled={status === "sending" || deliveryStatus !== "ready" || !form.email}
               >
                 {emailChecked ? <CheckCircle2 aria-hidden="true" /> : null}
-                {emailChecked ? "Verified" : "Verify email"}
+                {emailChecked ? "Email checked" : "Check email"}
               </button>
             </div>
+            {fieldErrors.email ? <small id="contact-email-error" className="field-error">{fieldErrors.email}</small> : null}
           </div>
 
           <label className="contact-field message-field" htmlFor="contact-message">
@@ -231,9 +277,14 @@ export function Contact() {
               maxLength={5000}
               required
               value={form.message}
-              onChange={(event) => setForm({ ...form, message: event.target.value })}
+              onChange={(event) => {
+                setForm({ ...form, message: event.target.value });
+                setFieldErrors((current) => ({ ...current, message: undefined }));
+              }}
               disabled={status === "sending" || deliveryStatus !== "ready" || !emailChecked}
               placeholder={emailChecked ? "Tell me what you are working on…" : "Verify your email to continue"}
+              aria-invalid={Boolean(fieldErrors.message)}
+              aria-describedby={fieldErrors.message ? "contact-message-error" : undefined}
             />
             {deliveryStatus !== "ready" || !emailChecked ? (
               <span className="message-lock" aria-hidden="true">
@@ -245,6 +296,7 @@ export function Contact() {
                     : "Check email to unlock"}
               </span>
             ) : null}
+            {fieldErrors.message ? <small id="contact-message-error" className="field-error">{fieldErrors.message}</small> : null}
           </label>
 
           <button

@@ -34,27 +34,6 @@ export function Navbar() {
           <span className="wordmark-name">{profile.name}</span>
         </Link>
 
-        <a
-          className="nav-resume mobile-resume"
-          href="/KevinCruz_Resume.pdf"
-          download
-          onClick={() => setOpen(false)}
-        >
-          Résumé
-          <Download aria-hidden="true" />
-        </a>
-
-        <button
-          className="mobile-menu-button"
-          type="button"
-          aria-expanded={open}
-          aria-controls="primary-navigation"
-          aria-label={open ? "Close navigation" : "Open navigation"}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-        </button>
-
         <nav
           id="primary-navigation"
           className={open ? "primary-navigation is-open" : "primary-navigation"}
@@ -78,16 +57,28 @@ export function Navbar() {
             })}
           </ul>
 
-          <a
-            className="nav-resume"
-            href="/KevinCruz_Resume.pdf"
-            download
-            onClick={() => setOpen(false)}
-          >
-            Résumé
-            <Download aria-hidden="true" />
-          </a>
         </nav>
+
+        <a
+          className="nav-resume header-resume"
+          href="/KevinCruz_Resume.pdf"
+          download
+          onClick={() => setOpen(false)}
+        >
+          Résumé
+          <Download aria-hidden="true" />
+        </a>
+
+        <button
+          className="mobile-menu-button"
+          type="button"
+          aria-expanded={open}
+          aria-controls="primary-navigation"
+          aria-label={open ? "Close navigation" : "Open navigation"}
+          onClick={() => setOpen((value) => !value)}
+        >
+          {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+        </button>
       </div>
     </header>
   );

@@ -7,7 +7,6 @@ import {
   Database,
   Microchip,
 } from "lucide-react";
-import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { capabilities } from "@/lib/data";
 
@@ -40,22 +39,21 @@ export function Skills() {
           {capabilities.map((capability, index) => {
             const Icon = icons[index];
             return (
-              <Reveal
+              <article
                 key={capability.title}
                 className="capability-item"
-                delay={Math.min(index * 0.035, 0.16)}
               >
                 <div className="capability-index">
                   <span>{capability.number}</span>
                   <Icon aria-hidden="true" />
                 </div>
-                <h3>{capability.title}</h3>
+                <h2>{capability.title}</h2>
                 <ul aria-label={`${capability.title} technologies`}>
                   {capability.items.map((item) => (
                     <li key={item}>{item}</li>
                   ))}
                 </ul>
-              </Reveal>
+              </article>
             );
           })}
         </div>

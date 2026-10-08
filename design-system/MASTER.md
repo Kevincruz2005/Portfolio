@@ -2,9 +2,9 @@
 
 ## Direction
 
-A calm environmental engineering portfolio. The visual language combines warm illustrated landscape tones with deep teal product surfaces, concise recruiter-readable copy, and editorial scroll interaction. The result should feel crafted and memorable without obscuring project evidence or navigation.
+A calm environmental engineering portfolio. The visual language combines warm illustrated landscape tones with deep teal product surfaces, concise recruiter-readable copy, and an editorial project archive. The result should feel crafted and memorable without obscuring project evidence or navigation.
 
-The homepage is a two-chapter experience: a sticky landscape stage followed by an engineering-principles section. The project route is a full-screen stack of paper-like cards tied directly to scroll. Supporting pages remain quieter and use the same palette, pill navigation, typography, and action geometry.
+The homepage begins with a sticky landscape stage and continues into recruiter evidence: a quick-view summary, three featured résumé projects, capabilities, and contact paths. The project route is a scroll-driven stack of paper-like cards with a static reduced-motion fallback. Supporting pages remain quieter and use the same palette, pill navigation, typography, and action geometry.
 
 ## Foundations
 
@@ -37,15 +37,15 @@ Cream and pale-green text meet AA contrast on teal. Small card metadata uses sol
 - Content width: 1200px maximum with responsive gutters.
 - Navigation and actions: full pills with a 44px minimum target.
 - Supporting route surfaces: 16–28px corners.
-- Project-stack cards: intentionally square, sharp paper sheets with no border.
+- Project cards: intentionally square, sharp paper sheets with no border.
 - Shadows remain diffuse and low saturation.
 
 ## Information hierarchy
 
 1. Fixed capsule navigation and résumé access.
 2. Landscape, role, value proposition, and primary actions.
-3. Engineering principles on the extended home chapter.
-4. Projects as a scroll-linked archive with one GitHub action per card.
+3. Three featured projects and a capability summary on the homepage.
+4. Projects as a scroll-driven archive with one clearly labelled GitHub profile action.
 5. About, capabilities, and direct email contact on separate endpoints.
 
 ## Signature components
@@ -58,14 +58,14 @@ Cream and pale-green text meet AA contrast on teal. Small card metadata uses sol
 - Scroll progress moves layers at different rates and gently reduces foreground-copy prominence.
 - Mobile uses an extended natural-flow composition to protect content and footer spacing.
 
-### Project stack
+### Project archive
 
-- Eleven semantic `article` elements represent the real archive.
-- The active card is centered and flat; the next card remains visible beneath it at a slight clockwise angle.
-- As scroll advances, the active card lifts, rotates counter-clockwise, scales down, and fades while the next card settles.
-- Background words drift subtly behind the cards.
-- Each card contains title, description, technologies, a large index, and exactly one GitHub link.
-- A quiet `01 — 11` index and coral side marker provide orientation.
+- Six semantic `article` elements represent the projects in the current résumé.
+- A sticky viewport stage moves through the cards with scroll-linked translation, rotation, scale, and opacity.
+- Reduced-motion users receive a two-column static grid that becomes one column on mobile.
+- Each card contains its title, description, technologies, and a large index.
+- The archive header links to the GitHub profile once; cards do not imply unverified repository-level URLs.
+- Oversized background type gives the route an editorial signature without affecting reading order.
 
 ### Buttons and navigation
 
@@ -78,22 +78,23 @@ Cream and pale-green text meet AA contrast on teal. Small card metadata uses sol
 ### Contact
 
 - Visible labels and native form semantics.
+- Inline errors identify the affected field and are programmatically associated with it.
 - The email check validates syntax and unlocks the message field without making a deliverability claim.
-- SMTP credentials stay server-only; the endpoint validates, escapes, and includes a honeypot.
+- A copy-email action complements mail, phone, GitHub, and LinkedIn fallbacks.
+- SMTP credentials stay server-only; the endpoint validates, escapes, rate-limits, caps payload size, and includes a honeypot.
 
 ## Responsive behavior
 
-- Validated at 360×800, 390×844, 768×1024, 1280×720, and 1440×900.
+- Validated at widths of 375, 430, 768, 1024, 1440, and 1920px.
 - No horizontal scroll.
-- Project cards use roughly 37% of desktop width and 78% of mobile width, constrained by viewport height.
+- Animated project cards remain viewport-constrained; the reduced-motion grid uses two desktop columns and one mobile column.
 - Home actions stack on mobile; the landscape remains above the copy and the footer remains below it.
 - Supporting route grids reduce to one column without changing component language.
 
 ## Motion and accessibility
 
-- Scroll motion is linked directly to progress and smoothed with lightweight interpolation.
-- Transforms use `translate3d`, rotate, scale, and opacity.
-- `prefers-reduced-motion` removes complex landscape effects and converts the project stack to a static two/one-column grid.
+- Landscape and project motion use lightweight interpolation and stop requesting frames once settled.
+- `prefers-reduced-motion` removes complex landscape effects and converts the project archive to a static grid.
 - Semantic landmarks, sequential headings, skip link, visible focus, descriptive external-link labels, and decorative `aria-hidden` layers are required.
 - WCAG 2.2 AA is the target; automated serious and critical Axe findings block completion.
 

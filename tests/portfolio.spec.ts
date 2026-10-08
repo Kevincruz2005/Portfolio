@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const routes = [
-  { path: "/", heading: "Thoughtful systems grow into reliable infrastructure." },
+  { path: "/", heading: "Software Engineer. Full-stack, backend-focused." },
   { path: "/projects", heading: "Projects." },
   { path: "/about", heading: "Full-stack development with a strong backend focus." },
   { path: "/capabilities", heading: "Technical skills." },
@@ -10,11 +10,12 @@ const routes = [
 ];
 
 const viewports = [
-  { name: "small phone", width: 360, height: 800 },
-  { name: "phone", width: 390, height: 844 },
+  { name: "small phone", width: 375, height: 812 },
+  { name: "large phone", width: 430, height: 932 },
   { name: "tablet", width: 768, height: 1024 },
-  { name: "laptop", width: 1280, height: 720 },
+  { name: "small laptop", width: 1024, height: 768 },
   { name: "desktop", width: 1440, height: 900 },
+  { name: "wide desktop", width: 1920, height: 1080 },
 ];
 
 for (const route of routes) {
@@ -24,6 +25,8 @@ for (const route of routes) {
     await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
     await expect(page.locator("main")).toHaveAttribute("id", "main-content");
     await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+    await expect(page.locator('a[href="/KevinCruz_Resume.pdf"]')).toHaveCount(1);
+    await expect(page.locator(".header-resume")).toBeVisible();
   });
 }
 
@@ -42,14 +45,15 @@ for (const viewport of viewports) {
   });
 }
 
-test("project archive uses compact cards with GitHub as the only outbound action", async ({ page }) => {
+test("project archive uses truthful project actions", async ({ page }) => {
   await page.goto("/projects");
   await expect(page.locator(".project-archive-card")).toHaveCount(6);
-  const links = page.locator(".project-archive-card > footer a");
-  await expect(links).toHaveCount(6);
-  for (let index = 0; index < (await links.count()); index += 1) {
-    await expect(links.nth(index)).toHaveAttribute("href", /^https:\/\/github\.com\//);
-  }
+  await expect(page.locator(".project-archive-card a")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /GitHub profile/ })).toHaveAttribute(
+    "href",
+    /^https:\/\/github\.com\//,
+  );
+  await expect(page.locator('a[href="/KevinCruz_Resume.pdf"]')).toHaveCount(1);
 });
 
 test("portfolio content matches the current résumé", async ({ page }) => {
@@ -142,7 +146,7 @@ test("email contact restores the check-and-unlock flow", async ({ page }) => {
 
   await page.getByLabel("Name").fill("Recruiter Test");
   await page.getByLabel("Reply email").fill("recruiter@example.com");
-  await page.getByRole("button", { name: "Verify email" }).click();
+  await page.getByRole("button", { name: "Check email" }).click();
 
   await expect(message).toBeEnabled();
   await message.fill("A valid local test message that is not submitted.");
@@ -170,11 +174,37 @@ test("contact API rejects malformed input without sending email", async ({ reque
   expect(response.status()).toBe(400);
 });
 
+test("contact API rate-limits repeated submissions", async ({ request }) => {
+  const headers = { "x-forwarded-for": "203.0.113.37" };
+  const data = {
+    name: "Automated Check",
+    email: "check@example.com",
+    message: "This honeypot request verifies rate limiting without sending email.",
+    website: "bot.example",
+  };
+
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const response = await request.post("/api/contact", { data, headers });
+    expect(response.status()).toBe(200);
+  }
+
+  const limited = await request.post("/api/contact", { data, headers });
+  expect(limited.status()).toBe(429);
+  expect(limited.headers()["retry-after"]).toBeTruthy();
+});
+
 test("home remains readable with reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.locator(".calm-birds")).toHaveCSS("display", "none");
+});
+
+test("home surfaces the recruiter summary and three featured projects", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByLabel("Recruiter quick view")).toBeVisible();
+  await expect(page.locator(".home-project-card")).toHaveCount(3);
+  await expect(page.getByText("Software Engineer / Full-Stack Internship", { exact: true })).toBeVisible();
 });
 
 test("home uses a viewport stage inside an extended scroll story and loads its landscape", async ({ page }) => {
@@ -211,12 +241,27 @@ test("home uses a viewport stage inside an extended scroll story and loads its l
   expect(layout.documentHeight).toBeGreaterThan(layout.viewportHeight * 2);
 });
 
+test("project archive restores the scroll-driven card stack", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/projects");
+
+  await expect(page.locator(".project-scroll-stage")).toHaveCSS("position", "sticky");
+  const storyHeight = await page.locator(".project-scroll-story").evaluate((element) =>
+    element.getBoundingClientRect().height,
+  );
+  expect(storyHeight).toBeGreaterThan(900 * 4);
+
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight * 0.55));
+  await expect(page.locator(".project-scroll-index span").first()).not.toHaveText("01");
+});
+
 test("project archive provides a static readable grid for reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/projects");
 
   await expect(page.locator(".project-stack-card")).toHaveCount(6);
   await expect(page.locator(".project-stack-card").last()).toBeVisible();
+  await expect(page.locator(".project-card-stack")).toHaveCSS("display", "grid");
   await expect(page.locator(".project-scroll-stage")).toHaveCSS("position", "relative");
 });
 

@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans } from "next/font/google";
-import { MotionProvider } from "@/components/motion-provider";
 import { Navbar } from "@/components/navbar";
-import { ScrollProgress } from "@/components/scroll-progress";
 import { SiteFooter } from "@/components/site-footer";
 import { education, profile } from "@/lib/data";
 import "./globals.css";
@@ -97,19 +95,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       data-scroll-behavior="smooth"
     >
       <body>
-        <MotionProvider>
-          <a className="skip-link" href="#main-content">
-            Skip to main content
-          </a>
-          <ScrollProgress />
-          <Navbar />
-          <main id="main-content">{children}</main>
-          <SiteFooter />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(personStructuredData) }}
-          />
-        </MotionProvider>
+        <a className="skip-link" href="#main-content">
+          Skip to main content
+        </a>
+        <Navbar />
+        <main id="main-content">{children}</main>
+        <SiteFooter />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personStructuredData) }}
+        />
       </body>
     </html>
   );
